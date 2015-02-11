@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 #if defined (STM32F030x6) || defined (STM32F030x8) ||                           \
     defined (STM32F031x6) || defined (STM32F038xx) ||                           \

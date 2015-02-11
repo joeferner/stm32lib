@@ -1,8 +1,8 @@
 
 #include "platform_config.h"
 
-void setup();
-void loop();
+static void setup();
+static void loop();
 
 int main(void) {
   setup();
@@ -12,17 +12,17 @@ int main(void) {
   return 0;
 }
 
-void setup() {
+static void setup() {
   GPIO_InitParams gpio;
   USART_InitParams usart;
 
-  RCC_peripheral1ClockEnable(DEBUG_RCC1);
-  RCC_peripheral2ClockEnable(DEBUG_RCC2);
+  RCC_peripheralClockEnable(DEBUG_RCC);
 
   GPIO_initParamsInit(&gpio);
   gpio.port = DEBUG_TX_PORT;
   gpio.pin = DEBUG_TX_PIN;
-  gpio.mode = GPIO_Mode_outputPushPull;
+  gpio.mode = GPIO_Mode_output;
+  gpio.outputType = GPIO_OutputType_pushPull;
   gpio.speed = GPIO_Speed_high;
   GPIO_init(&gpio);
 
@@ -30,7 +30,7 @@ void setup() {
   gpio.pin = DEBUG_RX_PIN;
   gpio.mode = GPIO_Mode_input;
   GPIO_init(&gpio);
-  
+
   USART_initParamsInit(&usart);
   usart.instance = DEBUG_USART;
   usart.baudRate = DEBUG_BAUD;
@@ -40,17 +40,25 @@ void setup() {
   usart.hardwareFlowControl = USART_HardwareFlowControl_none;
   usart.mode = USART_Mode_rx | USART_Mode_tx;
   USART_init(&usart);
-  
+
   USART_enable(DEBUG_USART);
+  
+  USART_txString(DEBUG_USART, "setup complete!\n");
 }
 
-void loop() {
+static void loop() {
   uint8_t b;
   
-  if(USART_rxHasData(DEBUG_USART)) {
+  RCC_TypeDef* rcc = RCC;
+  USART_TypeDef* usart1 = USART1;
+
+  if (USART_rxHasData(DEBUG_USART)) {
     b = USART_rx(DEBUG_USART);
-    USART_tx(DEBUG_USART, b);
     USART_txWaitForComplete(DEBUG_USART);
+    USART_tx(DEBUG_USART, b);
   }
 }
 
+void assert_failed(uint8_t *file, uint32_t line) {
+  while (1);
+}

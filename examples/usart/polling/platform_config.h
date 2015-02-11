@@ -1,10 +1,9 @@
 
 #include <stm32lib/hal/rcc.h>
-#include <stm32lib/hal/usart.h>
+#include <stm32lib/usart.h>
 #include <stm32lib/hal/gpio.h>
 
-#define DEBUG_RCC1    0
-#define DEBUG_RCC2    RCC_peripheral2_GPIOA | RCC_peripheral2_AFIO | RCC_peripheral2_USART1
+#define DEBUG_RCC     RCC_peripheral_GPIOA | RCC_peripheral_AFIO | RCC_peripheral_USART1
 #define DEBUG_USART   USART1
 #define DEBUG_BAUD    9600
 #define DEBUG_TX_PORT GPIOA

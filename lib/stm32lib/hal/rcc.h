@@ -4,14 +4,16 @@
 
 #include "base.h"
 
-#define RCC_peripheral2_GPIOA  0  // TODO
-#define RCC_peripheral2_AFIO   0  // TODO
-#define RCC_peripheral2_USART1 0  // TODO
+#define RCC_peripheral_AFIO        (1<<0)
+#define RCC_peripheral_GPIOA       (1<<1)
+#define RCC_peripheral_USART1      (1<<2)
+#define IS_RCC_PERIPHERAL(v) (v & ((1 << 3) - 1))
 
-void RCC_peripheral1ClockEnable(uint32_t set);
-void RCC_peripheral2ClockEnable(uint32_t set);
+void RCC_peripheralClockEnable(uint64_t set);
+void RCC_peripheralClock(uint64_t set, FunctionalState state);
 
-void RCC_peripheral1Clock(FunctionalState state, uint32_t set);
-void RCC_peripheral2Clock(FunctionalState state, uint32_t set);
+uint32_t RCC_getPCLK1Freq();
+uint32_t RCC_getHCLKFreq();
+uint32_t RCC_getSysClockFreq();
 
 #endif

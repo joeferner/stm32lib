@@ -2,6 +2,8 @@ CMakeLists.txt
 run-cmake.sh
 build.sh
 gcc_stm32.cmake
+run-gdb.sh
+run-st-util-server.sh
 *.s
 *.ld
 version.h

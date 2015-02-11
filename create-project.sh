@@ -24,6 +24,16 @@ if [ ! -f run-cmake.sh ]; then
   cp ${PROJECT_TEMPLATE_DIR}/run-cmake.sh run-cmake.sh
 fi
 
+if [ ! -f run-gdb.sh ]; then
+  echo "Creating run-gdb.sh"
+  cp ${PROJECT_TEMPLATE_DIR}/run-gdb.sh run-gdb.sh
+fi
+
+if [ ! -f run-st-util-server.sh ]; then
+  echo "Creating run-st-util-server.sh"
+  cp ${PROJECT_TEMPLATE_DIR}/run-st-util-server.sh run-st-util-server.sh
+fi
+
 STARTUP_FILE_NAME=startup_stm32f072xb.s
 if [ ! -f ${STARTUP_FILE_NAME} ]; then
   echo "Creating ${STARTUP_FILE_NAME}"
