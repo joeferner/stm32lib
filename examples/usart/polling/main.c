@@ -42,15 +42,15 @@ static void setup() {
   USART_init(&usart);
 
   USART_enable(DEBUG_USART);
-  
+
   USART_txString(DEBUG_USART, "setup complete!\n");
 }
 
 static void loop() {
   uint8_t b;
-  
-  RCC_TypeDef* rcc = RCC;
-  USART_TypeDef* usart1 = USART1;
+
+  RCC_TypeDef *rcc = RCC;
+  USART_TypeDef *usart1 = USART1;
 
   if (USART_rxHasData(DEBUG_USART)) {
     b = USART_rx(DEBUG_USART);

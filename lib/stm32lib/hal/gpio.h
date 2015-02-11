@@ -6,12 +6,12 @@
 
 typedef GPIO_TypeDef *GPIO_Port;
 #define IS_GPIO_PORT(p) ( \
-    ((p) == GPIOA) || \
-    ((p) == GPIOB) || \
-    ((p) == GPIOC) || \
-    ((p) == GPIOD) || \
-    ((p) == GPIOE) || \
-    ((p) == GPIOF)    \
+    (((GPIO_TypeDef*)p) == GPIOA) || \
+    (((GPIO_TypeDef*)p) == GPIOB) || \
+    (((GPIO_TypeDef*)p) == GPIOC) || \
+    (((GPIO_TypeDef*)p) == GPIOD) || \
+    (((GPIO_TypeDef*)p) == GPIOE) || \
+    (((GPIO_TypeDef*)p) == GPIOF)    \
   )
 
 typedef enum {
@@ -70,15 +70,21 @@ typedef enum {
   )
 
 typedef enum {
-  GPIO_PullUpDown_No = 0b00,
-  GPIO_PullUpDown_PullUp = 0b01,
-  GPIO_PullUpDown_PullDown = 0b10
+  GPIO_PullUpDown_no = 0b00,
+  GPIO_PullUpDown_pullUp = 0b01,
+  GPIO_PullUpDown_pullDown = 0b10
 } GPIO_PullUpDown;
 #define IS_GPIO_PULL_UP_DOWN(v) ( \
-    ((v) == GPIO_PullUpDown_No) || \
-    ((v) == GPIO_PullUpDown_PullUp) || \
-    ((v) == GPIO_PullUpDown_PullDown) \
+    ((v) == GPIO_PullUpDown_no) || \
+    ((v) == GPIO_PullUpDown_pullUp) || \
+    ((v) == GPIO_PullUpDown_pullDown) \
   )
+
+typedef enum {
+  GPIO_Bit_reset = 0,
+  GPIO_Bit_set = 1
+} GPIO_BitAction;
+#define IS_GPIO_BIT_ACTION(v) ( ((v) == GPIO_Bit_reset) || ((v) == GPIO_Bit_set) )
 
 typedef struct {
   GPIO_Port port;
@@ -91,5 +97,9 @@ typedef struct {
 
 void GPIO_initParamsInit(GPIO_InitParams *initParams);
 void GPIO_init(GPIO_InitParams *initParams);
+void GPIO_setBits(GPIO_Port port, GPIO_Pin pin);
+void GPIO_resetBits(GPIO_Port port, GPIO_Pin pin);
+void GPIO_writeBits(GPIO_Port port, GPIO_Pin pin, GPIO_BitAction bitAction);
+GPIO_BitAction GPIO_readInputBit(GPIO_Port port, GPIO_Pin pin);
 
 #endif

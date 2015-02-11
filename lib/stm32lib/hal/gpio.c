@@ -7,7 +7,7 @@ void GPIO_initParamsInit(GPIO_InitParams *initParams) {
   initParams->speed = GPIO_Speed_low;
   initParams->mode = GPIO_Mode_default;
   initParams->outputType = GPIO_OutputType_default;
-  initParams->pullUpDown = GPIO_PullUpDown_No;
+  initParams->pullUpDown = GPIO_PullUpDown_no;
 }
 
 void GPIO_init(GPIO_InitParams *initParams) {
@@ -33,7 +33,7 @@ void GPIO_init(GPIO_InitParams *initParams) {
   for (pinPos = 0; pinPos < 16; pinPos++) {
     pos = 1 << pinPos;
     if (initParams->pin & pos) {
-      pos2bit = pinPos << 2;
+      pos2bit = pinPos * 2;
       pin2bitMask = 0b11 << pos2bit;
       pinMask = 0b1 << pos;
 
@@ -55,3 +55,35 @@ void GPIO_init(GPIO_InitParams *initParams) {
   initParams->port->OSPEEDR = tmpOSPEEDR;
   initParams->port->PUPDR = tmpPUPDR;
 }
+
+void GPIO_setBits(GPIO_Port port, GPIO_Pin pin) {
+  assert_param(IS_GPIO_PORT(port));
+  port->BSRR = pin;
+}
+
+void GPIO_resetBits(GPIO_Port port, GPIO_Pin pin) {
+  assert_param(IS_GPIO_PORT(port));
+  port->BRR = pin;
+}
+
+void GPIO_writeBits(GPIO_Port port, GPIO_Pin pin, GPIO_BitAction bitAction) {
+  assert_param(IS_GPIO_PORT(port));
+  assert_param(IS_GPIO_BIT_ACTION(bitAction));
+  if (bitAction != GPIO_Bit_reset) {
+    port->BSRR = pin;
+  } else {
+    port->BRR = pin;
+  }
+}
+
+GPIO_BitAction GPIO_readInputBit(GPIO_Port port, GPIO_Pin pin) {
+  assert_param(IS_GPIO_PORT(port));
+  if (port->IDR & pin) {
+    return GPIO_Bit_set;
+  } else {
+    return GPIO_Bit_reset;
+  }
+}
+
+
+
