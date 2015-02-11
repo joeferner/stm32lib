@@ -1,5 +1,56 @@
 
 #include "usart.h"
+#include "rcc.h"
+
+void USART_initParamsInit(USART_InitParams *initParams) {
+  HAL_USART_initParamsInit(&initParams->halUsartInitParams);
+  initParams->txPort = NULL;
+  initParams->txPin = -1;
+  initParams->rxPort = NULL;
+  initParams->rxPin = -1;
+}
+
+void USART_init(USART_InitParams *initParams) {
+  GPIO_InitParams gpio;
+  uint32_t tmp;
+
+  // RCC
+  RCC_peripheralClockEnable(RCC_peripheral_AFIO);
+  if (initParams->halUsartInitParams.instance == USART1) {
+    RCC_peripheralClockEnable(RCC_peripheral_USART1);
+  } else {
+    assert_param(0);
+  }
+  RCC_peripheralClockEnableForPort(initParams->txPort);
+  RCC_peripheralClockEnableForPort(initParams->rxPort);
+
+  // GPIO AFIO
+  if (initParams->halUsartInitParams.instance == USART1
+      && initParams->txPort == GPIOA && initParams->txPin == GPIO_Pin_9
+      && initParams->rxPort == GPIOA && initParams->rxPin == GPIO_Pin_10) {
+    tmp = GPIOA->AFR[1];
+    tmp &= ~(0xFF << 4);
+    tmp |= (0x11 << 4);
+    GPIOA->AFR[1] = tmp;
+  } else {
+    assert_param(0);
+  }
+
+  // GPIO
+  GPIO_initParamsInit(&gpio);
+  gpio.port = initParams->txPort;
+  gpio.pin = initParams->txPin;
+  gpio.mode = GPIO_Mode_alternateFunction;
+  gpio.outputType = GPIO_OutputType_pushPull;
+  gpio.speed = GPIO_Speed_high;
+  GPIO_init(&gpio);
+
+  gpio.port = initParams->rxPort;
+  gpio.pin = initParams->rxPin;
+  GPIO_init(&gpio);
+
+  HAL_USART_init(&initParams->halUsartInitParams);
+}
 
 void USART_txString(USART_Instance instance, const char *str) {
   const char *p = str;

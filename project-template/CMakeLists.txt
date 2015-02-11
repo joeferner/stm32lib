@@ -18,6 +18,7 @@ SET(PROJECT_SOURCES
   ${STM32LIB_DIR}/stm32lib/hal/gpio.c
   ${STM32LIB_DIR}/stm32lib/hal/usart.c
   ${STM32LIB_DIR}/stm32lib/usart.c
+  ${STM32LIB_DIR}/stm32lib/rcc.c
   
   %SYSTEM_FILE_NAME%
   main.c

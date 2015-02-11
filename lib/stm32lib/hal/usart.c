@@ -23,7 +23,7 @@ typedef enum {
   USART_ClockSource_hsi = 0b11
 } USART_ClockSource;
 
-void USART_initParamsInit(USART_InitParams *initParams) {
+void HAL_USART_initParamsInit(HAL_USART_InitParams *initParams) {
   initParams->baudRate = 9600;
   initParams->wordLength = USART_WordLength_8b;
   initParams->stopBits = USART_StopBits_1;
@@ -32,7 +32,7 @@ void USART_initParamsInit(USART_InitParams *initParams) {
   initParams->hardwareFlowControl = USART_HardwareFlowControl_none;
 }
 
-void USART_init(USART_InitParams *initParams) {
+void HAL_USART_init(HAL_USART_InitParams *initParams) {
   uint32_t tmpReg = 0x00;
   uint32_t clockDiv = 0x00;
   uint32_t brrTemp = 0;

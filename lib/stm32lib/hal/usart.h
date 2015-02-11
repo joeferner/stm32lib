@@ -110,10 +110,10 @@ typedef struct {
   USART_StopBits stopBits;
   USART_HardwareFlowControl hardwareFlowControl;
   USART_Mode mode;
-} USART_InitParams;
+} HAL_USART_InitParams;
 
-void USART_initParamsInit(USART_InitParams *initParams);
-void USART_init(USART_InitParams *initParams);
+void HAL_USART_initParamsInit(HAL_USART_InitParams *initParams);
+void HAL_USART_init(HAL_USART_InitParams *initParams);
 void USART_enable(USART_Instance instance);
 void USART_disable(USART_Instance instance);
 void USART_setState(USART_Instance instance, FunctionalState state);
