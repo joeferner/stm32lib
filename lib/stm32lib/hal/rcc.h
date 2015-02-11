@@ -11,7 +11,7 @@
 void RCC_peripheral1ClockEnable(uint32_t set);
 void RCC_peripheral2ClockEnable(uint32_t set);
 
-void RCC_peripheral1Clock(enableDisable state, uint32_t set);
-void RCC_peripheral2Clock(enableDisable state, uint32_t set);
+void RCC_peripheral1Clock(FunctionalState state, uint32_t set);
+void RCC_peripheral2Clock(FunctionalState state, uint32_t set);
 
 #endif

@@ -8,7 +8,7 @@
 #define DEBUG_USART   USART1
 #define DEBUG_BAUD    9600
 #define DEBUG_TX_PORT GPIOA
-#define DEBUG_TX_PIN  GPIO_pin_9
+#define DEBUG_TX_PIN  GPIO_Pin_9
 #define DEBUG_RX_PORT GPIOA
-#define DEBUG_RX_PIN  GPIO_pin_10
+#define DEBUG_RX_PIN  GPIO_Pin_10
 

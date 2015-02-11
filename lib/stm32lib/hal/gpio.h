@@ -4,32 +4,30 @@
 
 #include "base.h"
 
-typedef enum {
-  GPIOA
-} GPIO_Port;
+typedef GPIO_TypeDef* GPIO_Instance;
 
 typedef enum {
-  GPIO_pin_9 = 9,
-  GPIO_pin_10 = 10
-} GPIO_pin;
+  GPIO_Pin_9 = 9,
+  GPIO_Pin_10 = 10
+} GPIO_Pin;
 
 typedef enum {
-  GPIO_mode_input = 1, // TODO
-  GPIO_mode_outputPushPull = 1 // TODO
-} GPIO_mode;
+  GPIO_Mode_input = 1, // TODO
+  GPIO_Mode_outputPushPull = 1 // TODO
+} GPIO_Mode;
 
 typedef enum {
-  GPIO_speed_high = 3 // TODO
-} GPIO_speed;
+  GPIO_Speed_high = 3 // TODO
+} GPIO_Speed;
 
 typedef struct {
-  GPIO_Port port;
-  GPIO_pin pin;
-  GPIO_mode mode;
-  GPIO_speed speed;
-} GPIO_initParams;
+  GPIO_Instance port;
+  GPIO_Pin pin;
+  GPIO_Mode mode;
+  GPIO_Speed speed;
+} GPIO_InitParams;
 
-void GPIO_initParamsInit(GPIO_initParams* initParams);
-void GPIO_init(GPIO_initParams* initParams);
+void GPIO_initParamsInit(GPIO_InitParams* initParams);
+void GPIO_init(GPIO_InitParams* initParams);
 
 #endif

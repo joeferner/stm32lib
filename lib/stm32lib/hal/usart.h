@@ -4,47 +4,45 @@
 
 #include "base.h"
 
-typedef enum {
-  USART1 = 1 // TODO
-} USART_instance;
+typedef USART_TypeDef* USART_Instance;
 
 typedef enum {
-  USART_wordLength_8b = 1 // TODO
-} USART_wordLength;
+  USART_WordLength_8b = 1 // TODO
+} USART_WordLength;
 
 typedef enum {
-  USART_parity_no = 0 // TODO
-} USART_parity;
+  USART_Parity_no = 0 // TODO
+} USART_Parity;
 
 typedef enum {
-  USART_stopBits_1 = 1 // TODO
-} USART_stopBits;
+  USART_StopBits_1 = 1 // TODO
+} USART_StopBits;
 
 typedef enum {
-  USART_hardwareFlowControl_none = 0 // TODO
-} USART_hardwareFlowControl;
+  USART_HardwareFlowControl_none = 0 // TODO
+} USART_HardwareFlowControl;
 
 typedef enum {
-  USART_mode_tx = 0, // TODO
-  USART_mode_rx = 1 // TODO
-} USART_mode;
+  USART_Mode_tx = 0, // TODO
+  USART_Mode_rx = 1 // TODO
+} USART_Mode;
 
 typedef struct {
-  USART_instance instance;
+  USART_TypeDef* instance;
   uint32_t baudRate;
-  USART_wordLength wordLength;
-  USART_parity parity;
-  USART_stopBits stopBits;
-  USART_hardwareFlowControl hardwareFlowControl;
-  USART_mode mode;
-} USART_initParams;
+  USART_WordLength wordLength;
+  USART_Parity parity;
+  USART_StopBits stopBits;
+  USART_HardwareFlowControl hardwareFlowControl;
+  USART_Mode mode;
+} USART_InitParams;
 
-void USART_initParamsInit(USART_initParams* initParams);
-void USART_init(USART_initParams* initParams);
-void USART_enable(USART_instance instance);
-bool USART_rxHasData(USART_instance instance);
-uint8_t USART_rx(USART_instance instance);
-void USART_tx(USART_instance instance, uint8_t b);
-void USART_txWaitForComplete(USART_instance instance);
+void USART_initParamsInit(USART_InitParams* initParams);
+void USART_init(USART_InitParams* initParams);
+void USART_enable(USART_Instance instance);
+bool USART_rxHasData(USART_Instance instance);
+uint8_t USART_rx(USART_Instance instance);
+void USART_tx(USART_Instance instance, uint8_t b);
+void USART_txWaitForComplete(USART_Instance instance);
 
 #endif
