@@ -4,3 +4,4 @@ build.sh
 gcc_stm32.cmake
 *.s
 *.ld
+version.h

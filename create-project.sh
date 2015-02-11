@@ -11,6 +11,8 @@ echo "  CHIP=${CHIP}"
 echo "  STM32LIB_DIR=${STM32LIB_DIR}"
 
 STM32_CHIP_DEF=STM32F072xB
+STM32_FLASH_SIZE=$(echo "128 * 1024" | bc)
+STM32_RAM_SIZE=$(echo "16 * 1024" | bc)
 
 if [ ! -f build.sh ]; then
   echo "Creating build.sh"
@@ -39,11 +41,6 @@ if [ ! -f gcc_stm32.cmake ]; then
   cp ${PROJECT_TEMPLATE_DIR}/gcc_stm32.cmake gcc_stm32.cmake
 fi
 
-if [ ! -f stm32_flash.md ]; then
-  echo "Creating stm32_flash.md"
-  cp ${PROJECT_TEMPLATE_DIR}/stm32_flash.md stm32_flash.md
-fi
-
 SYSTEM_FILE_NAME=system_stm32f0xx.c
 if [ ! -f ${SYSTEM_FILE_NAME} ]; then
   echo "Creating ${SYSTEM_FILE_NAME}"
@@ -60,4 +57,6 @@ if [ ! -f CMakeLists.txt ]; then
   sed -i -- "s|%STARTUP_FILE_NAME%|${STARTUP_FILE_NAME}|g" CMakeLists.txt
   sed -i -- "s|%SYSTEM_FILE_NAME%|${SYSTEM_FILE_NAME}|g" CMakeLists.txt
   sed -i -- "s|%STM32_CHIP_DEF%|${STM32_CHIP_DEF}|g" CMakeLists.txt
+  sed -i -- "s|%STM32_FLASH_SIZE%|${STM32_FLASH_SIZE}|g" CMakeLists.txt
+  sed -i -- "s|%STM32_RAM_SIZE%|${STM32_RAM_SIZE}|g" CMakeLists.txt
 fi
