@@ -85,5 +85,32 @@ GPIO_BitAction GPIO_readInputBit(GPIO_Port port, GPIO_Pin pin) {
   }
 }
 
+void GPIO_setAlternateFunction(GPIO_Port port, GPIO_Pin pin, uint8_t af) {
+  uint32_t pinPos;
+  uint32_t pos;
+  uint32_t tmp;
+
+  assert_param(af <= 0xf);
+  
+  tmp = port->AFR[0];
+  for (pinPos = 0; pinPos < 8; pinPos++) {
+    pos = 1 << pinPos;
+    if (pin & pos) {
+      tmp &= ~(0xF << (pinPos * 4));
+      tmp |= (af << (pinPos * 4));
+    }
+  }
+  port->AFR[0] = tmp;
+  
+  tmp = port->AFR[1];
+  for (pinPos = 8; pinPos < 16; pinPos++) {
+    pos = 1 << pinPos;
+    if (pin & pos) {
+      tmp &= ~(0xF << ((pinPos - 8) * 4));
+      tmp |= (af << ((pinPos - 8) * 4));
+    }
+  }
+  port->AFR[1] = tmp;
+}
 
 

@@ -6,6 +6,7 @@ SET(STM32LIB_DIR "%STM32LIB_DIR%")
 
 INCLUDE_DIRECTORIES(
   ${STM32LIB_DIR}
+  .
 )
 
 SET(STM32_CHIP "%CHIP%")
@@ -19,7 +20,9 @@ SET(PROJECT_SOURCES
   ${STM32LIB_DIR}/stm32lib/hal/usart.c
   ${STM32LIB_DIR}/stm32lib/usart.c
   ${STM32LIB_DIR}/stm32lib/rcc.c
-  
+  ${STM32LIB_DIR}/stm32lib/debug.c
+  ${STM32LIB_DIR}/stm32lib/newlib.c
+
   %SYSTEM_FILE_NAME%
   main.c
 )

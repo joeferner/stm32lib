@@ -1,18 +1,34 @@
 #!/bin/bash
 
+function die {
+  echo >&2 "$@"
+  exit 1
+}
+
+[ "$#" -eq 2 ] || die "usage: $(basename $0) <project-name> <chip>"
+
 DIR=$(cd $(dirname "$0") && pwd)
 PROJECT_NAME=$1
 CHIP=$2
 PROJECT_TEMPLATE_DIR=${DIR}/project-template
 STM32LIB_DIR=${DIR}/lib
 
-echo "Creating project ${PROJECT_NAME}"
-echo "  CHIP=${CHIP}"
-echo "  STM32LIB_DIR=${STM32LIB_DIR}"
+case ${CHIP} in
+STM32F072xB)
+  STM32_CHIP_DEF=STM32F072xB
+  STM32_FLASH_SIZE=$(echo "128 * 1024" | bc)
+  STM32_RAM_SIZE=$(echo "16 * 1024" | bc)
+  ;;
+*)
+  die "invalid chip"
+  ;;
+esac
 
-STM32_CHIP_DEF=STM32F072xB
-STM32_FLASH_SIZE=$(echo "128 * 1024" | bc)
-STM32_RAM_SIZE=$(echo "16 * 1024" | bc)
+echo "Creating project ${PROJECT_NAME}"
+echo "  STM32_CHIP_DEF   = ${STM32_CHIP_DEF}"
+echo "  STM32_FLASH_SIZE = ${STM32_FLASH_SIZE}"
+echo "  STM32_RAM_SIZE   = ${STM32_RAM_SIZE}"
+echo "  STM32LIB_DIR     = ${STM32LIB_DIR}"
 
 if [ ! -f build.sh ]; then
   echo "Creating build.sh"
@@ -49,6 +65,16 @@ fi
 if [ ! -f gcc_stm32.cmake ]; then
   echo "Creating gcc_stm32.cmake"
   cp ${PROJECT_TEMPLATE_DIR}/gcc_stm32.cmake gcc_stm32.cmake
+fi
+
+if [ ! -f main.c ]; then
+  echo "Creating main.c"
+  cp ${PROJECT_TEMPLATE_DIR}/main.c main.c
+fi
+
+if [ ! -f platform_config.h ]; then
+  echo "Creating platform_config.h"
+  cp ${PROJECT_TEMPLATE_DIR}/platform_config/platform_config.h platform_config.h
 fi
 
 SYSTEM_FILE_NAME=system_stm32f0xx.c

@@ -101,5 +101,6 @@ void GPIO_setBits(GPIO_Port port, GPIO_Pin pin);
 void GPIO_resetBits(GPIO_Port port, GPIO_Pin pin);
 void GPIO_writeBits(GPIO_Port port, GPIO_Pin pin, GPIO_BitAction bitAction);
 GPIO_BitAction GPIO_readInputBit(GPIO_Port port, GPIO_Pin pin);
+void GPIO_setAlternateFunction(GPIO_Port port, GPIO_Pin pin, uint8_t af);
 
 #endif

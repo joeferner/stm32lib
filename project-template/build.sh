@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
-PROJECT_NAME=$(basename $(dirname $(pwd)))
+PROJECT_NAME=$(basename $(pwd))
+echo "Building project ${PROJECT_NAME}"
 
 function get_flash_and_ram {
   local line=$(grep 'SET(STM32_FLASH_SIZE' CMakeLists.txt)
@@ -36,7 +37,9 @@ EOL
 function build {
   mkdir -p build
   cd build
-  rm ${PROJECT_NAME}.elf || echo "Cannot remove. ${PROJECT_NAME}.elf not build?"
+  if [[ -f ${PROJECT_NAME}.elf ]]; then
+    rm ${PROJECT_NAME}.elf
+  fi
   make ${PROJECT_NAME}.bin && \
   make ${PROJECT_NAME}.list
 }

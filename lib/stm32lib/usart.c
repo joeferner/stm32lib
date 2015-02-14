@@ -12,7 +12,6 @@ void USART_initParamsInit(USART_InitParams *initParams) {
 
 void USART_init(USART_InitParams *initParams) {
   GPIO_InitParams gpio;
-  uint32_t tmp;
 
   // RCC
   RCC_peripheralClockEnable(RCC_peripheral_AFIO);
@@ -28,10 +27,7 @@ void USART_init(USART_InitParams *initParams) {
   if (initParams->halUsartInitParams.instance == USART1
       && initParams->txPort == GPIOA && initParams->txPin == GPIO_Pin_9
       && initParams->rxPort == GPIOA && initParams->rxPin == GPIO_Pin_10) {
-    tmp = GPIOA->AFR[1];
-    tmp &= ~(0xFF << 4);
-    tmp |= (0x11 << 4);
-    GPIOA->AFR[1] = tmp;
+    GPIO_setAlternateFunction(GPIOA, GPIO_Pin_9 | GPIO_Pin_10, 1);
   } else {
     assert_param(0);
   }
