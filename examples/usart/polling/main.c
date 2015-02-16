@@ -37,10 +37,6 @@ static void setup() {
 static void loop() {
   uint8_t b;
 
-  RCC_TypeDef *rcc = RCC;
-  USART_TypeDef *usart1 = USART1;
-  GPIO_TypeDef *gpioa = GPIOA;
-
   if (USART_rxHasData(DEBUG_USART)) {
     b = USART_rx(DEBUG_USART);
     USART_txWaitForComplete(DEBUG_USART);
