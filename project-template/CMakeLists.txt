@@ -20,6 +20,7 @@ SET(PROJECT_SOURCES
   ${STM32LIB_DIR}/stm32lib/hal/usart.c
   ${STM32LIB_DIR}/stm32lib/usart.c
   ${STM32LIB_DIR}/stm32lib/rcc.c
+  ${STM32LIB_DIR}/stm32lib/time.c
   ${STM32LIB_DIR}/stm32lib/debug.c
   ${STM32LIB_DIR}/stm32lib/newlib.c
 
