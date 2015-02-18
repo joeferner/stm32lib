@@ -21,7 +21,9 @@ static void setup() {
   debug_setup();
 
   SPI_initParamsInit(&spiInit);
-  spiInit.halSpiInitParams.spi = MCP3204_SPI;
+  spiInit.halSpiInitParams.instance = MCP3204_SPI;
+  spiInit.halSpiInitParams.cpol = SPI_CPOL_low;
+  spiInit.halSpiInitParams.cpha = SPI_CPHA_1Edge;
   spiInit.mosiPort = MCP3204_MOSI_PORT;
   spiInit.mosiPin = MCP3204_MOSI_PIN;
   spiInit.misoPort = MCP3204_MISO_PORT;

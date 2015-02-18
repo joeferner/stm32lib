@@ -21,6 +21,16 @@ void SPI_init(SPI_InitParams *initParams) {
   RCC_peripheralClockEnableForPort(initParams->misoPort);
   RCC_peripheralClockEnableForPort(initParams->sckPort);
 
+  // GPIO AFIO
+  if (initParams->halSpiInitParams.instance == SPI1
+      && initParams->mosiPort == GPIOA && initParams->mosiPin == GPIO_Pin_7
+      && initParams->misoPort == GPIOA && initParams->misoPin == GPIO_Pin_6
+      && initParams->sckPort == GPIOA && initParams->sckPin == GPIO_Pin_5) {
+    GPIO_setAlternateFunction(GPIOA, GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7, 0);
+  } else {
+    assert_param(0);
+  }
+
   GPIO_initParamsInit(&gpio);
   gpio.port = initParams->mosiPort;
   gpio.pin = initParams->mosiPin;
@@ -38,4 +48,13 @@ void SPI_init(SPI_InitParams *initParams) {
   gpio.mode = GPIO_Mode_input;
   GPIO_init(&gpio);
 }
+
+uint8_t SPI_transfer(SPI_Instance instance, uint8_t d) {
+  SPI_sendData(instance, d);
+  while (SPI_getFlagStatus(instance, SPI_Flag_TXE) == RESET);
+  while (SPI_getFlagStatus(instance, SPI_Flag_RXNE) == RESET);
+  while (SPI_getFlagStatus(instance, SPI_Flag_BSY) == SET);
+  return SPI_receiveData(instance);
+}
+
 

@@ -1,6 +1,7 @@
 
 #include "mcp3204.h"
 #include "../../rcc.h"
+#include "../../spi.h"
 
 void _mcp3204_csDeassert(MCP3204 *mcp3204);
 void _mcp3204_csAssert(MCP3204 *mcp3204);
@@ -29,7 +30,13 @@ void _mcp3204_csAssert(MCP3204 *mcp3204) {
 }
 
 uint16_t mcp3204_read(MCP3204 *mcp3204, MCP3204_ch ch) {
+  uint16_t high, low, value;
+
   _mcp3204_csAssert(mcp3204);
-  // TODO
+  SPI_transfer(mcp3204->spi, (ch >> 8) & 0xff);
+  high = SPI_transfer(mcp3204->spi, ch & 0xff) & 0x0f;
+  low = SPI_transfer(mcp3204->spi, 0x00);
+  value = (high << 8) | low;
   _mcp3204_csDeassert(mcp3204);
+  return value;
 }
