@@ -41,7 +41,15 @@ static void setup() {
 }
 
 static void loop() {
+  uint16_t ch0, ch1, ch2, ch3;
 
+  ch0 = mcp3204_read(&mcp3204, MCP3204_ch0Single);
+  ch1 = mcp3204_read(&mcp3204, MCP3204_ch1Single);
+  ch2 = mcp3204_read(&mcp3204, MCP3204_ch2Single);
+  ch3 = mcp3204_read(&mcp3204, MCP3204_ch3Single);
+  printf("adc: ch0: %ud, ch1: %ud, ch2: %ud, ch3: %ud\n", ch0, ch1, ch2, ch3);
+
+  sleep_ms(1000);
 }
 
 void assert_failed(uint8_t *file, uint32_t line) {
