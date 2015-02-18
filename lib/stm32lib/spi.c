@@ -15,8 +15,6 @@ void SPI_initParamsInit(SPI_InitParams *initParams) {
 void SPI_init(SPI_InitParams *initParams) {
   GPIO_InitParams gpio;
 
-  HAL_SPI_init(&initParams->halSpiInitParams);
-
   RCC_peripheralClockEnableForPort(initParams->mosiPort);
   RCC_peripheralClockEnableForPort(initParams->misoPort);
   RCC_peripheralClockEnableForPort(initParams->sckPort);
@@ -34,7 +32,7 @@ void SPI_init(SPI_InitParams *initParams) {
   GPIO_initParamsInit(&gpio);
   gpio.port = initParams->mosiPort;
   gpio.pin = initParams->mosiPin;
-  gpio.mode = GPIO_Mode_output;
+  gpio.mode = GPIO_Mode_alternateFunction;
   gpio.outputType = GPIO_OutputType_pushPull;
   gpio.speed = GPIO_Speed_high;
   GPIO_init(&gpio);
@@ -45,15 +43,17 @@ void SPI_init(SPI_InitParams *initParams) {
 
   gpio.port = initParams->misoPort;
   gpio.pin = initParams->misoPin;
-  gpio.mode = GPIO_Mode_input;
   GPIO_init(&gpio);
+
+  HAL_SPI_init(&initParams->halSpiInitParams);
 }
 
 uint8_t SPI_transfer(SPI_Instance instance, uint8_t d) {
+  while (SPI_getFlagStatus(instance, SPI_Flag_TXE) == RESET);
   SPI_sendData(instance, d);
   while (SPI_getFlagStatus(instance, SPI_Flag_TXE) == RESET);
   while (SPI_getFlagStatus(instance, SPI_Flag_RXNE) == RESET);
-  while (SPI_getFlagStatus(instance, SPI_Flag_BSY) == SET);
+  while (SPI_getFlagStatus(instance, SPI_Flag_BSY) == RESET);
   return SPI_receiveData(instance);
 }
 

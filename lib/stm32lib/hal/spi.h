@@ -65,6 +65,13 @@ typedef enum {
   || ((d) == SPI_DataSize_15b) \
   || ((d) == SPI_DataSize_16b) \
 )
+#define IS_SPI_DATASIZE_8BIT_OR_LESS(d) ( \
+  ((d) == SPI_DataSize_4b) \
+  || ((d) == SPI_DataSize_5b) \
+  || ((d) == SPI_DataSize_6b) \
+  || ((d) == SPI_DataSize_7b) \
+  || ((d) == SPI_DataSize_8b) \
+)
 
 typedef enum {
   SPI_NSS_soft = 0x0200,
@@ -108,6 +115,16 @@ typedef enum {
   || ((d) == SPI_FirstBit_lsb) \
 )
 
+/**
+ * +------+------+-------+
+ * | Mode | CPOL | CPHA  |
+ * +------+------+-------+
+ * |  0   | low  | 1Edge |
+ * |  1   | low  | 2Edge |
+ * |  2   | high | 1Edge |
+ * |  3   | high | 2Edge |
+ * +------+------+-------+
+ */
 typedef enum {
   SPI_CPOL_low = 0x00,
   SPI_CPOL_high = 0x02

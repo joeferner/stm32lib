@@ -61,8 +61,30 @@ void RCC_peripheralClock(uint64_t set, FunctionalState state) {
   assert_param(IS_FUNCTIONAL_STATE(state));
 
   if (set & RCC_peripheral_AFIO)   {}
-  if (set & RCC_peripheral_GPIOA)  ahbenr |= (1 << 17);
-  if (set & RCC_peripheral_USART1) apb2enr |= (1 << 14);
+  if (set & RCC_peripheral_GPIOA)  {
+    ahbenr |= (1 << 17);
+  }
+  if (set & RCC_peripheral_GPIOB)  {
+    ahbenr |= (1 << 18);
+  }
+  if (set & RCC_peripheral_GPIOC)  {
+    ahbenr |= (1 << 19);
+  }
+  if (set & RCC_peripheral_GPIOD)  {
+    ahbenr |= (1 << 20);
+  }
+  if (set & RCC_peripheral_GPIOE)  {
+    ahbenr |= (1 << 21);
+  }
+  if (set & RCC_peripheral_GPIOF)  {
+    ahbenr |= (1 << 22);
+  }
+  if (set & RCC_peripheral_USART1) {
+    apb2enr |= (1 << 14);
+  }
+  if (set & RCC_peripheral_SPI1)   {
+    apb2enr |= (1 << 12);
+  }
 
   if (state != DISABLE) {
     RCC->AHBENR |= ahbenr;

@@ -15,8 +15,8 @@
 #define MCP3204_MISO_PIN  GPIO_Pin_6
 #define MCP3204_SCK_PORT  GPIOA
 #define MCP3204_SCK_PIN   GPIO_Pin_5
-#define MCP3204_CS_PORT   GPIOA
-#define MCP3204_CS_PIN    GPIO_Pin_3
+#define MCP3204_CS_PORT   GPIOB
+#define MCP3204_CS_PIN    GPIO_Pin_6
 
 #include <stm32lib/hal/rcc.h>
 #include <stm32lib/hal/gpio.h>

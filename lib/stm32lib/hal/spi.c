@@ -1,5 +1,6 @@
 
 #include "spi.h"
+#include "rcc.h"
 
 void HAL_SPI_initParamsInit(HAL_SPI_InitParams *initParams) {
   initParams->instance = NULL;
@@ -7,7 +8,7 @@ void HAL_SPI_initParamsInit(HAL_SPI_InitParams *initParams) {
   initParams->mode = SPI_Mode_master;
   initParams->dataSize = SPI_DataSize_8b;
   initParams->nss = SPI_NSS_soft;
-  initParams->baudRatePrescaler = SPI_BaudRatePrescaler_2;
+  initParams->baudRatePrescaler = SPI_BaudRatePrescaler_256;
   initParams->firstBit = SPI_FirstBit_msb;
   initParams->cpol = SPI_CPOL_low;
   initParams->cpha = SPI_CPHA_1Edge;
@@ -25,6 +26,12 @@ void HAL_SPI_init(HAL_SPI_InitParams *initParams) {
   assert_param(IS_SPI_CPHA(initParams->cpha));
   assert_param(IS_SPI_NSS(initParams->nss));
   assert_param(IS_SPI_BAUD_RATE_PRESCALER(initParams->baudRatePrescaler));
+
+  if (initParams->instance == SPI1) {
+    RCC_peripheralClockEnable(RCC_peripheral_SPI1);
+  } else {
+    assert_param(0);
+  }
 
   // CR1
   tmp = initParams->instance->CR1;
@@ -57,6 +64,12 @@ void HAL_SPI_init(HAL_SPI_InitParams *initParams) {
 
   tmp &= ~SPI_DataSize_mask;
   tmp |= initParams->dataSize;
+
+  if (IS_SPI_DATASIZE_8BIT_OR_LESS(initParams->dataSize)) {
+    tmp |= SPI_CR2_FRXTH;
+  } else {
+    tmp &= ~SPI_CR2_FRXTH;
+  }
 
   initParams->instance->CR2 = tmp;
 }

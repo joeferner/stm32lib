@@ -37,17 +37,23 @@ static void setup() {
   mcp3204.csPin = MCP3204_CS_PIN;
   mcp3204_setup(&mcp3204);
 
+  SPI_enable(MCP3204_SPI);
+  
   printf("setup complete!\n");
 }
 
 static void loop() {
   uint16_t ch0, ch1, ch2, ch3;
 
+  printf("begin sampling... ");
   ch0 = mcp3204_read(&mcp3204, MCP3204_ch0Single);
+  sleep_ms(100);
   ch1 = mcp3204_read(&mcp3204, MCP3204_ch1Single);
+  sleep_ms(100);
   ch2 = mcp3204_read(&mcp3204, MCP3204_ch2Single);
+  sleep_ms(100);
   ch3 = mcp3204_read(&mcp3204, MCP3204_ch3Single);
-  printf("adc: ch0: %ud, ch1: %ud, ch2: %ud, ch3: %ud\n", ch0, ch1, ch2, ch3);
+  printf(" ch0: %u, ch1: %u, ch2: %u, ch3: %u\n", ch0, ch1, ch2, ch3);
 
   sleep_ms(1000);
 }
