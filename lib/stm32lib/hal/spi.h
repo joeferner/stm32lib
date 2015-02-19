@@ -173,8 +173,10 @@ void HAL_SPI_init(HAL_SPI_InitParams *initParams);
 void SPI_enable(SPI_Instance instance);
 void SPI_disable(SPI_Instance instance);
 void SPI_setState(SPI_Instance instance, FunctionalState state);
-void SPI_sendData(SPI_Instance instance, uint8_t d);
-uint8_t SPI_receiveData(SPI_Instance instance);
+void SPI_sendData8(SPI_Instance instance, uint8_t d);
+uint8_t SPI_receiveData8(SPI_Instance instance);
+void SPI_sendData16(SPI_Instance instance, uint16_t d);
+uint16_t SPI_receiveData16(SPI_Instance instance);
 FlagStatus SPI_getFlagStatus(SPI_Instance instance, SPI_Flag flag);
 
 #endif

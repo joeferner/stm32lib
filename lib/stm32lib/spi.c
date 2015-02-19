@@ -49,12 +49,13 @@ void SPI_init(SPI_InitParams *initParams) {
 }
 
 uint8_t SPI_transfer(SPI_Instance instance, uint8_t d) {
+  while (SPI_getFlagStatus(instance, SPI_Flag_RXNE) == SET) {
+    SPI_receiveData16(instance);
+  }
   while (SPI_getFlagStatus(instance, SPI_Flag_TXE) == RESET);
-  SPI_sendData(instance, d);
-  while (SPI_getFlagStatus(instance, SPI_Flag_TXE) == RESET);
+  SPI_sendData8(instance, d);
   while (SPI_getFlagStatus(instance, SPI_Flag_RXNE) == RESET);
-  while (SPI_getFlagStatus(instance, SPI_Flag_BSY) == RESET);
-  return SPI_receiveData(instance);
+  return SPI_receiveData8(instance);
 }
 
 

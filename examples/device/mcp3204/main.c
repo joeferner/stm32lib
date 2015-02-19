@@ -47,11 +47,8 @@ static void loop() {
 
   printf("begin sampling... ");
   ch0 = mcp3204_read(&mcp3204, MCP3204_ch0Single);
-  sleep_ms(100);
   ch1 = mcp3204_read(&mcp3204, MCP3204_ch1Single);
-  sleep_ms(100);
   ch2 = mcp3204_read(&mcp3204, MCP3204_ch2Single);
-  sleep_ms(100);
   ch3 = mcp3204_read(&mcp3204, MCP3204_ch3Single);
   printf(" ch0: %u, ch1: %u, ch2: %u, ch3: %u\n", ch0, ch1, ch2, ch3);
 

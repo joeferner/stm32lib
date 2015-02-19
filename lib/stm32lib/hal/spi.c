@@ -93,12 +93,22 @@ void SPI_setState(SPI_Instance instance, FunctionalState state) {
   }
 }
 
-void SPI_sendData(SPI_Instance instance, uint8_t d) {
+void SPI_sendData8(SPI_Instance instance, uint8_t d) {
+  assert_param(IS_SPI_INSTANCE(instance));
+  *((volatile uint8_t *)&instance->DR) = d;
+}
+
+uint8_t SPI_receiveData8(SPI_Instance instance) {
+  assert_param(IS_SPI_INSTANCE(instance));
+  return *((volatile uint8_t *)&instance->DR);
+}
+
+void SPI_sendData16(SPI_Instance instance, uint16_t d) {
   assert_param(IS_SPI_INSTANCE(instance));
   instance->DR = d;
 }
 
-uint8_t SPI_receiveData(SPI_Instance instance) {
+uint16_t SPI_receiveData16(SPI_Instance instance) {
   assert_param(IS_SPI_INSTANCE(instance));
   return instance->DR;
 }
