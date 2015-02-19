@@ -1,4 +1,5 @@
 
+#include "base.h"
 #include "rcc.h"
 
 #define RCC_CFGR_HPRE_BITNUMBER    4
@@ -62,28 +63,31 @@ void RCC_peripheralClock(uint64_t set, FunctionalState state) {
 
   if (set & RCC_peripheral_AFIO)   {}
   if (set & RCC_peripheral_GPIOA)  {
-    ahbenr |= (1 << 17);
+    ahbenr |= RCC_AHBENR_GPIOAEN;
   }
   if (set & RCC_peripheral_GPIOB)  {
-    ahbenr |= (1 << 18);
+    ahbenr |= RCC_AHBENR_GPIOBEN;
   }
   if (set & RCC_peripheral_GPIOC)  {
-    ahbenr |= (1 << 19);
+    ahbenr |= RCC_AHBENR_GPIOCEN;
   }
   if (set & RCC_peripheral_GPIOD)  {
-    ahbenr |= (1 << 20);
+    ahbenr |= RCC_AHBENR_GPIODEN;
   }
   if (set & RCC_peripheral_GPIOE)  {
-    ahbenr |= (1 << 21);
+    ahbenr |= RCC_AHBENR_GPIOEEN;
   }
   if (set & RCC_peripheral_GPIOF)  {
-    ahbenr |= (1 << 22);
+    ahbenr |= RCC_AHBENR_GPIOFEN;
+  }
+  if (set & RCC_peripheral_DAC) {
+    apb1enr |= RCC_APB1ENR_DACEN;
   }
   if (set & RCC_peripheral_USART1) {
-    apb2enr |= (1 << 14);
+    apb2enr |= RCC_APB2ENR_USART1EN;
   }
   if (set & RCC_peripheral_SPI1)   {
-    apb2enr |= (1 << 12);
+    apb2enr |= RCC_APB2ENR_SPI1EN;
   }
 
   if (state != DISABLE) {
