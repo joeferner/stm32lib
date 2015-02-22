@@ -30,9 +30,26 @@ typedef enum {
   GPIO_Pin_12 =  0b0001000000000000,
   GPIO_Pin_13 =  0b0010000000000000,
   GPIO_Pin_14 =  0b0100000000000000,
-  GPIO_Pin_15 =  0b1000000000000000,
-  GPIO_Pin_All = 0b1111111111111111
+  GPIO_Pin_15 =  0b1000000000000000
 } GPIO_Pin;
+#define IS_GPIO_PIN(v) ( \
+    ((v) == GPIO_Pin_0) \
+    || ((v) == GPIO_Pin_1) \
+    || ((v) == GPIO_Pin_2) \
+    || ((v) == GPIO_Pin_3) \
+    || ((v) == GPIO_Pin_4) \
+    || ((v) == GPIO_Pin_5) \
+    || ((v) == GPIO_Pin_6) \
+    || ((v) == GPIO_Pin_7) \
+    || ((v) == GPIO_Pin_8) \
+    || ((v) == GPIO_Pin_9) \
+    || ((v) == GPIO_Pin_10) \
+    || ((v) == GPIO_Pin_11) \
+    || ((v) == GPIO_Pin_12) \
+    || ((v) == GPIO_Pin_13) \
+    || ((v) == GPIO_Pin_14) \
+    || ((v) == GPIO_Pin_15) \
+  )
 
 typedef enum {
   GPIO_Mode_input = 0b00,
@@ -102,5 +119,6 @@ void GPIO_resetBits(GPIO_Port port, GPIO_Pin pin);
 void GPIO_writeBits(GPIO_Port port, GPIO_Pin pin, GPIO_BitAction bitAction);
 GPIO_BitAction GPIO_readInputBit(GPIO_Port port, GPIO_Pin pin);
 void GPIO_setAlternateFunction(GPIO_Port port, GPIO_Pin pin, uint8_t af);
+void GPIO_EXTILineConfig(GPIO_Port port, GPIO_Pin pin);
 
 #endif

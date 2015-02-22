@@ -1,9 +1,12 @@
 
 #include "gpio.h"
 
+uint32_t _GPIO_portToEXTIPortSource(GPIO_Port port);
+uint32_t _GPIO_pinToEXTIPinSource(GPIO_Pin pin);
+
 void GPIO_initParamsInit(GPIO_InitParams *initParams) {
   initParams->port = NULL;
-  initParams->pin  = GPIO_Pin_All;
+  initParams->pin  = 0;
   initParams->speed = GPIO_Speed_low;
   initParams->mode = GPIO_Mode_default;
   initParams->outputType = GPIO_OutputType_default;
@@ -91,7 +94,7 @@ void GPIO_setAlternateFunction(GPIO_Port port, GPIO_Pin pin, uint8_t af) {
   uint32_t tmp;
 
   assert_param(af <= 0xf);
-  
+
   tmp = port->AFR[0];
   for (pinPos = 0; pinPos < 8; pinPos++) {
     pos = 1 << pinPos;
@@ -101,7 +104,7 @@ void GPIO_setAlternateFunction(GPIO_Port port, GPIO_Pin pin, uint8_t af) {
     }
   }
   port->AFR[0] = tmp;
-  
+
   tmp = port->AFR[1];
   for (pinPos = 8; pinPos < 16; pinPos++) {
     pos = 1 << pinPos;
@@ -113,4 +116,61 @@ void GPIO_setAlternateFunction(GPIO_Port port, GPIO_Pin pin, uint8_t af) {
   port->AFR[1] = tmp;
 }
 
+uint32_t _GPIO_portToEXTIPortSource(GPIO_Port port) {
+  assert_param(IS_GPIO_PORT(port));
+
+  if (port == GPIOA) {
+    return 0x00;
+  } else if (port == GPIOB) {
+    return 0x01;
+  } else if (port == GPIOC) {
+    return 0x02;
+  } else if (port == GPIOD) {
+    return 0x03;
+  } else if (port == GPIOE) {
+    return 0x04;
+  } else if (port == GPIOF) {
+    return 0x05;
+  }
+  assert_param(0);
+  return -1;
+}
+
+uint32_t _GPIO_pinToEXTIPinSource(GPIO_Pin pin) {
+  assert_param(IS_GPIO_PIN(pin));
+
+  switch (pin) {
+  case GPIO_Pin_0: return 0x00;
+  case GPIO_Pin_1: return 0x01;
+  case GPIO_Pin_2: return 0x02;
+  case GPIO_Pin_3: return 0x03;
+  case GPIO_Pin_4: return 0x04;
+  case GPIO_Pin_5: return 0x05;
+  case GPIO_Pin_6: return 0x06;
+  case GPIO_Pin_7: return 0x07;
+  case GPIO_Pin_8: return 0x08;
+  case GPIO_Pin_9: return 0x09;
+  case GPIO_Pin_10: return 0x0a;
+  case GPIO_Pin_11: return 0x0b;
+  case GPIO_Pin_12: return 0x0c;
+  case GPIO_Pin_13: return 0x0d;
+  case GPIO_Pin_14: return 0x0e;
+  case GPIO_Pin_15: return 0x0f;
+  }
+  assert_param(0);
+  return -1;
+}
+
+void GPIO_EXTILineConfig(GPIO_Port port, GPIO_Pin pin) {
+  uint32_t tmp;
+  assert_param(IS_GPIO_PORT(port));
+  assert_param(IS_GPIO_PIN(pin));
+
+  uint32_t portSource = _GPIO_portToEXTIPortSource(port);
+  uint32_t pinSource = _GPIO_pinToEXTIPinSource(pin);
+
+  tmp = ((uint32_t)0x0F) << (0x04 * (pinSource & (uint8_t)0x03));
+  SYSCFG->EXTICR[pinSource >> 0x02] &= ~tmp;
+  SYSCFG->EXTICR[pinSource >> 0x02] |= (((uint32_t)portSource) << (0x04 * (pinSource & (uint8_t)0x03)));
+}
 

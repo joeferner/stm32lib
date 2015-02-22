@@ -4,20 +4,35 @@
 
 #include "base.h"
 
-#define RCC_peripheral_AFIO        (1<<0)
-#define RCC_peripheral_GPIOA       (1<<1)
-#define RCC_peripheral_GPIOB       (1<<2)
-#define RCC_peripheral_GPIOC       (1<<3)
-#define RCC_peripheral_GPIOD       (1<<4)
-#define RCC_peripheral_GPIOE       (1<<5)
-#define RCC_peripheral_GPIOF       (1<<6)
-#define RCC_peripheral_DAC         (1<<7)
-#define RCC_peripheral_USART1      (1<<8)
-#define RCC_peripheral_SPI1        (1<<9)
-#define IS_RCC_PERIPHERAL(v) (v & ((1 << 10) - 1))
+typedef enum  {
+  RCC_Peripheral_AFIO   = 0x0000001,
+  RCC_Peripheral_SYSCFG = 0x0000002,
+  RCC_Peripheral_GPIOA  = 0x0000004,
+  RCC_Peripheral_GPIOB  = 0x0000008,
+  RCC_Peripheral_GPIOC  = 0x0000010,
+  RCC_Peripheral_GPIOD  = 0x0000020,
+  RCC_Peripheral_GPIOE  = 0x0000040,
+  RCC_Peripheral_GPIOF  = 0x0000080,
+  RCC_Peripheral_DAC    = 0x0000100,
+  RCC_Peripheral_USART1 = 0x0000200,
+  RCC_Peripheral_SPI1   = 0x0000400
+} RCC_Peripheral;
+#define IS_RCC_PERIPHERAL(v) ( \
+  ((v) == RCC_Peripheral_AFIO) \
+  || ((v) == RCC_Peripheral_SYSCFG) \
+  || ((v) == RCC_Peripheral_GPIOA) \
+  || ((v) == RCC_Peripheral_GPIOB) \
+  || ((v) == RCC_Peripheral_GPIOC) \
+  || ((v) == RCC_Peripheral_GPIOD) \
+  || ((v) == RCC_Peripheral_GPIOE) \
+  || ((v) == RCC_Peripheral_GPIOF) \
+  || ((v) == RCC_Peripheral_DAC) \
+  || ((v) == RCC_Peripheral_USART1) \
+  || ((v) == RCC_Peripheral_SPI1) \
+)
 
-void RCC_peripheralClockEnable(uint64_t set);
-void RCC_peripheralClock(uint64_t set, FunctionalState state);
+void RCC_peripheralClockEnable(RCC_Peripheral set);
+void RCC_peripheralClock(RCC_Peripheral set, FunctionalState state);
 
 uint32_t RCC_getPCLK1Freq();
 uint32_t RCC_getHCLKFreq();

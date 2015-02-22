@@ -49,11 +49,11 @@ const uint8_t PredivFactorTable[16] = { 1, 2,  3,  4,  5,  6,  7,  8, 9, 10, 11,
   * @}
   */
 
-void RCC_peripheralClockEnable(uint64_t set) {
+void RCC_peripheralClockEnable(RCC_Peripheral set) {
   RCC_peripheralClock(set, ENABLE);
 }
 
-void RCC_peripheralClock(uint64_t set, FunctionalState state) {
+void RCC_peripheralClock(RCC_Peripheral set, FunctionalState state) {
   uint32_t ahbenr = 0;
   uint32_t apb1enr = 0;
   uint32_t apb2enr = 0;
@@ -61,32 +61,35 @@ void RCC_peripheralClock(uint64_t set, FunctionalState state) {
   assert_param(IS_RCC_PERIPHERAL(set));
   assert_param(IS_FUNCTIONAL_STATE(state));
 
-  if (set & RCC_peripheral_AFIO)   {}
-  if (set & RCC_peripheral_GPIOA)  {
+  if (set & RCC_Peripheral_AFIO)   {}
+  if (set & RCC_Peripheral_SYSCFG)   {
+    apb2enr |= RCC_APB2ENR_SYSCFGCOMPEN;
+  }
+  if (set & RCC_Peripheral_GPIOA)  {
     ahbenr |= RCC_AHBENR_GPIOAEN;
   }
-  if (set & RCC_peripheral_GPIOB)  {
+  if (set & RCC_Peripheral_GPIOB)  {
     ahbenr |= RCC_AHBENR_GPIOBEN;
   }
-  if (set & RCC_peripheral_GPIOC)  {
+  if (set & RCC_Peripheral_GPIOC)  {
     ahbenr |= RCC_AHBENR_GPIOCEN;
   }
-  if (set & RCC_peripheral_GPIOD)  {
+  if (set & RCC_Peripheral_GPIOD)  {
     ahbenr |= RCC_AHBENR_GPIODEN;
   }
-  if (set & RCC_peripheral_GPIOE)  {
+  if (set & RCC_Peripheral_GPIOE)  {
     ahbenr |= RCC_AHBENR_GPIOEEN;
   }
-  if (set & RCC_peripheral_GPIOF)  {
+  if (set & RCC_Peripheral_GPIOF)  {
     ahbenr |= RCC_AHBENR_GPIOFEN;
   }
-  if (set & RCC_peripheral_DAC) {
+  if (set & RCC_Peripheral_DAC) {
     apb1enr |= RCC_APB1ENR_DACEN;
   }
-  if (set & RCC_peripheral_USART1) {
+  if (set & RCC_Peripheral_USART1) {
     apb2enr |= RCC_APB2ENR_USART1EN;
   }
-  if (set & RCC_peripheral_SPI1)   {
+  if (set & RCC_Peripheral_SPI1)   {
     apb2enr |= RCC_APB2ENR_SPI1EN;
   }
 

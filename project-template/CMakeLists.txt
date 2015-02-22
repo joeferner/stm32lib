@@ -18,14 +18,18 @@ SET(PROJECT_SOURCES
   ${STM32LIB_DIR}/stm32lib/hal/rcc.c
   ${STM32LIB_DIR}/stm32lib/hal/gpio.c
   ${STM32LIB_DIR}/stm32lib/hal/usart.c
+  ${STM32LIB_DIR}/stm32lib/hal/exti.c
+  ${STM32LIB_DIR}/stm32lib/hal/nvic.c
   ${STM32LIB_DIR}/stm32lib/usart.c
   ${STM32LIB_DIR}/stm32lib/rcc.c
   ${STM32LIB_DIR}/stm32lib/time.c
+  ${STM32LIB_DIR}/stm32lib/exti.c
   ${STM32LIB_DIR}/stm32lib/debug.c
   ${STM32LIB_DIR}/stm32lib/newlib.c
 
   %SYSTEM_FILE_NAME%
   main.c
+  interrupts.c
 )
 
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DUSE_FULL_ASSERT -D${STM32_CHIP_DEF}")

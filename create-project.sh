@@ -77,6 +77,11 @@ if [ ! -f platform_config.h ]; then
   cp ${PROJECT_TEMPLATE_DIR}/platform_config/platform_config.h platform_config.h
 fi
 
+if [ ! -f interrupts.c ]; then
+  echo "Creating interrupts.c"
+  cp ${PROJECT_TEMPLATE_DIR}/interrupts.c interrupts.c
+fi
+
 SYSTEM_FILE_NAME=system_stm32f0xx.c
 if [ ! -f ${SYSTEM_FILE_NAME} ]; then
   echo "Creating ${SYSTEM_FILE_NAME}"

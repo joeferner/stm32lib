@@ -14,9 +14,9 @@ void USART_init(USART_InitParams *initParams) {
   GPIO_InitParams gpio;
 
   // RCC
-  RCC_peripheralClockEnable(RCC_peripheral_AFIO);
+  RCC_peripheralClockEnable(RCC_Peripheral_AFIO);
   if (initParams->halUsartInitParams.instance == USART1) {
-    RCC_peripheralClockEnable(RCC_peripheral_USART1);
+    RCC_peripheralClockEnable(RCC_Peripheral_USART1);
   } else {
     assert_param(0);
   }
