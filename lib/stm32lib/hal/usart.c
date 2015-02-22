@@ -1,7 +1,6 @@
 
 #include "usart.h"
 #include "rcc.h"
-#include "nvic.h"
 #include "base.h"
 
 /** @brief  BRR division operation to set BRR register in 8-bit oversampling mode

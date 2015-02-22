@@ -19,7 +19,6 @@ SET(PROJECT_SOURCES
   ${STM32LIB_DIR}/stm32lib/hal/gpio.c
   ${STM32LIB_DIR}/stm32lib/hal/usart.c
   ${STM32LIB_DIR}/stm32lib/hal/exti.c
-  ${STM32LIB_DIR}/stm32lib/hal/nvic.c
   ${STM32LIB_DIR}/stm32lib/usart.c
   ${STM32LIB_DIR}/stm32lib/rcc.c
   ${STM32LIB_DIR}/stm32lib/time.c

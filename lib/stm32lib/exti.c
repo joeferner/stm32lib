@@ -27,7 +27,7 @@ EXTI_Line EXTI_getLineForGpio(GPIO_Port port, GPIO_Pin pin) {
   return -1;
 }
 
-NVIC_Channel EXTI_getIRQForGpio(GPIO_Port port, GPIO_Pin pin) {
+IRQn_Type EXTI_getIRQForGpio(GPIO_Port port, GPIO_Pin pin) {
   assert_param(IS_GPIO_PIN(pin));
 
   switch (pin) {

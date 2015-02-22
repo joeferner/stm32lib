@@ -4,9 +4,9 @@
 
 #include "hal/exti.h"
 #include "hal/gpio.h"
-#include "hal/nvic.h"
+#include "hal/base.h"
 
 EXTI_Line EXTI_getLineForGpio(GPIO_Port port, GPIO_Pin pin);
-NVIC_Channel EXTI_getIRQForGpio(GPIO_Port port, GPIO_Pin pin);
+IRQn_Type EXTI_getIRQForGpio(GPIO_Port port, GPIO_Pin pin);
 
 #endif
