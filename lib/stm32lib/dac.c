@@ -15,7 +15,7 @@ void DAC_init(DAC_InitParams *initParams) {
     initParams->halDacInitParams.channel = DAC_getChannelFromPortAndPin(initParams->port, initParams->pin);
   }
 
-  RCC_peripheralClockEnable(RCC_peripheral_DAC);
+  RCC_peripheralClockEnable(RCC_Peripheral_DAC);
 
   GPIO_initParamsInit(&gpio);
   gpio.port = initParams->port;

@@ -28,7 +28,7 @@ void HAL_SPI_init(HAL_SPI_InitParams *initParams) {
   assert_param(IS_SPI_BAUD_RATE_PRESCALER(initParams->baudRatePrescaler));
 
   if (initParams->instance == SPI1) {
-    RCC_peripheralClockEnable(RCC_peripheral_SPI1);
+    RCC_peripheralClockEnable(RCC_Peripheral_SPI1);
   } else {
     assert_param(0);
   }
