@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 bool gpioInterruptOccured;
-EXTI_Line gpioInterruptLine;
+volatile EXTI_Line gpioInterruptLine;
 uint32_t lastTime;
 
 static void setup();
@@ -60,7 +60,8 @@ void onExti() {
 
 
 static void loop() {
-  GPIO_TypeDef *gpio = GPIOC;
+  GPIO_TypeDef *gpioa = GPIOA;
+  GPIO_TypeDef *gpioc = GPIOC;
   RCC_TypeDef *rcc = RCC;
   SYSCFG_TypeDef *syscfg = SYSCFG;
   EXTI_TypeDef *exti = EXTI;

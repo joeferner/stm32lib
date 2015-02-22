@@ -2,10 +2,10 @@
 #include "hal/chip/chip.h"
 
 extern uint32_t SystemCoreClock;
-volatile uint32_t counter_ms = 0;
+volatile uint32_t _time_counter_ms = 0;
 
 void time_SysTick_Handler() {
-  counter_ms++;
+  _time_counter_ms++;
 }
 
 void time_setup() {
@@ -40,10 +40,11 @@ void time_setup() {
     /* Capture error */
     while (1);
   }
+  NVIC_SetPriority(SysTick_IRQn, 0);
 }
 
 volatile uint32_t time_ms() {
-  return counter_ms;
+  return _time_counter_ms;
 }
 
 void sleep_ms(uint32_t ms) {

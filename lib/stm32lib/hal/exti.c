@@ -38,9 +38,10 @@ void EXTI_enable(EXTI_InitParams *initParams) {
 }
 
 FlagStatus EXTI_getStatus(EXTI_Line line) {
+  EXTI_TypeDef* exti = EXTI;
   assert_param(IS_EXTI_LINE(line));
 
-  if ((EXTI->PR & line) != (uint32_t)RESET) {
+  if ((exti->PR & line) != (uint32_t)RESET) {
     return SET;
   } else {
     return RESET;
@@ -48,9 +49,10 @@ FlagStatus EXTI_getStatus(EXTI_Line line) {
 }
 
 void EXTI_clearPendingBit(EXTI_Line line) {
+  EXTI_TypeDef* exti = EXTI;
   assert_param(IS_EXTI_LINE(line));
 
-  EXTI->PR = line;
+  exti->PR = line;
 }
 
 

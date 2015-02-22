@@ -8,8 +8,10 @@
 #define DEBUG_RX_PORT GPIOA
 #define DEBUG_RX_PIN  GPIO_Pin_10
 
-#define BUTTON_PORT   GPIOC
-#define BUTTON_PIN    GPIO_Pin_13
+//#define BUTTON_PORT   GPIOC
+//#define BUTTON_PIN    GPIO_Pin_13
+#define BUTTON_PORT   GPIOA
+#define BUTTON_PIN    GPIO_Pin_0
 
 #include <stm32lib/utils.h>
 #include <stm32lib/hal/rcc.h>
