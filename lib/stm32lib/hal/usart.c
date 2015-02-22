@@ -1,6 +1,8 @@
 
 #include "usart.h"
 #include "rcc.h"
+#include "nvic.h"
+#include "base.h"
 
 /** @brief  BRR division operation to set BRR register in 8-bit oversampling mode
   * @param  _PCLK_: UART clock
@@ -174,3 +176,57 @@ FlagStatus USART_getFlagStatus(USART_Instance instance, USART_Flag flag) {
     return RESET;
   }
 }
+
+void USART_clearFlag(USART_Instance instance, USART_Flag flag) {
+  assert_param(IS_USART(instance));
+  assert_param(IS_USART_FLAG(flag));
+
+  instance->ICR = flag;
+}
+
+void USART_interruptsEnable(USART_Instance instance, uint32_t priority) {
+  IRQn_Type irq;
+  uint32_t imr;
+  assert_param(IS_USART(instance));
+  assert_param(IS_NVIC_PRIORITY(priority));
+  if (instance == USART1) {
+    irq = USART1_IRQn;
+    imr = EXTI_IMR_MR27;
+  } else if (instance == USART2) {
+    irq = USART2_IRQn;
+    imr = EXTI_IMR_MR28;
+  } else if (instance == USART3 || instance == USART4) {
+    irq = USART3_4_IRQn;
+    imr = EXTI_IMR_MR29;
+  } else {
+    assert_param(0);
+    return;
+  }
+
+  EXTI->IMR = imr;
+
+  NVIC_EnableIRQ(irq);
+  NVIC_SetPriority(irq, priority);
+}
+
+void USART_interruptTransmissionComplete(USART_Instance instance, FunctionalState state) {
+  assert_param(IS_USART(instance));
+  assert_param(IS_FUNCTIONAL_STATE(state));
+  if (state == ENABLE) {
+    instance->CR1 |= USART_CR1_TCIE;
+  } else {
+    instance->CR1 &= ~USART_CR1_TCIE;
+  }
+}
+
+void USART_interruptReceive(USART_Instance instance, FunctionalState state) {
+  assert_param(IS_USART(instance));
+  assert_param(IS_FUNCTIONAL_STATE(state));
+  if (state == ENABLE) {
+    instance->CR1 |= USART_CR1_RXNEIE;
+  } else {
+    instance->CR1 &= ~USART_CR1_RXNEIE;
+  }
+}
+
+

@@ -1,4 +1,5 @@
 
+#include "debug.h"
 #include <platform_config.h>
 #include <errno.h>
 #include <sys/stat.h>
@@ -6,7 +7,6 @@
 #include <sys/unistd.h>
 #include <string.h>
 #include <stdio.h>
-#include "debug.h"
 
 extern int  __HEAP_START;
 

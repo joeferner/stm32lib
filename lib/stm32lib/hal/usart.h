@@ -74,30 +74,53 @@ typedef enum {
 #define USART_MODE_mask (USART_Mode_tx | USART_Mode_rx)
 
 typedef enum {
-  USART_Flag_REACK = 0b1000000000000000000000,
-  USART_Flag_TEACK = 0b0100000000000000000000,
-  USART_Flag_WUF   = 0b0010000000000000000000,
-  USART_Flag_RWU   = 0b0001000000000000000000,
-  USART_Flag_SBKF  = 0b0000100000000000000000,
-  USART_Flag_CMF   = 0b0000010000000000000000,
-  USART_Flag_BUSY  = 0b0000001000000000000000,
-  USART_Flag_ABRF  = 0b0000000100000000000000,
-  USART_Flag_ABRE  = 0b0000000010000000000000,
-  USART_Flag_EOBF  = 0b0000000001000000000000,
-  USART_Flag_RTOF  = 0b0000000000100000000000,
-  USART_Flag_CTS   = 0b0000000000010000000000,
-  USART_Flag_CTSIF = 0b0000000000001000000000,
-  USART_Flag_LBDF  = 0b0000000000000100000000,
-  USART_Flag_TXE   = 0b0000000000000010000000,
-  USART_Flag_TC    = 0b0000000000000001000000,
-  USART_Flag_RXNE  = 0b0000000000000000100000,
-  USART_Flag_IDLE  = 0b0000000000000000010000,
-  USART_Flag_ORE   = 0b0000000000000000001000,
-  USART_Flag_NF    = 0b0000000000000000000100,
-  USART_Flag_FE    = 0b0000000000000000000010,
-  USART_Flag_PE    = 0b0000000000000000000001
+  USART_Flag_PE    = 0x00000001,
+  USART_Flag_FE    = 0x00000002,
+  USART_Flag_NE    = 0x00000004,
+  USART_Flag_ORE   = 0x00000008,
+  USART_Flag_IDLE  = 0x00000010,
+  USART_Flag_RXNE  = 0x00000020,
+  USART_Flag_TC    = 0x00000040,
+  USART_Flag_TXE   = 0x00000080,
+  USART_Flag_LBDF  = 0x00000100,
+  USART_Flag_CTSIF = 0x00000200,
+  USART_Flag_CTS   = 0x00000400,
+  USART_Flag_RTOF  = 0x00000800,
+  USART_Flag_EOBF  = 0x00001000,
+  USART_Flag_ABRE  = 0x00004000,
+  USART_Flag_ABRF  = 0x00008000,
+  USART_Flag_BUSY  = 0x00010000,
+  USART_Flag_CMF   = 0x00020000,
+  USART_Flag_SBKF  = 0x00040000,
+  USART_Flag_RWU   = 0x00080000,
+  USART_Flag_WUF   = 0x00100000,
+  USART_Flag_TEACK = 0x00200000,
+  USART_Flag_REACK = 0x00400000,
 } USART_Flag;
-#define IS_USART_FLAG(v) (1)
+#define IS_USART_FLAG(v) ( \
+  ((v) == USART_Flag_PE) \
+  || ((v) == USART_Flag_FE) \
+  || ((v) == USART_Flag_NE) \
+  || ((v) == USART_Flag_ORE) \
+  || ((v) == USART_Flag_IDLE) \
+  || ((v) == USART_Flag_RXNE) \
+  || ((v) == USART_Flag_TC) \
+  || ((v) == USART_Flag_TXE) \
+  || ((v) == USART_Flag_LBDF) \
+  || ((v) == USART_Flag_CTSIF) \
+  || ((v) == USART_Flag_CTS) \
+  || ((v) == USART_Flag_RTOF) \
+  || ((v) == USART_Flag_EOBF) \
+  || ((v) == USART_Flag_ABRE) \
+  || ((v) == USART_Flag_ABRF) \
+  || ((v) == USART_Flag_BUSY) \
+  || ((v) == USART_Flag_CMF) \
+  || ((v) == USART_Flag_SBKF) \
+  || ((v) == USART_Flag_RWU) \
+  || ((v) == USART_Flag_WUF) \
+  || ((v) == USART_Flag_TEACK) \
+  || ((v) == USART_Flag_REACK) \
+)
 
 #define IS_USART_DATA(d)            ((d) <= 0x1FF)
 #define IS_USART_BAUDRATE(b)        (((b) > 0) && ((b) < 0x0044AA21))
@@ -123,5 +146,9 @@ void USART_tx(USART_Instance instance, uint8_t b);
 void USART_txWaitForComplete(USART_Instance instance);
 bool USART_txComplete(USART_Instance instance);
 FlagStatus USART_getFlagStatus(USART_Instance instance, USART_Flag flag);
+void USART_clearFlag(USART_Instance instance, USART_Flag flag);
+void USART_interruptTransmissionComplete(USART_Instance instance, FunctionalState state);
+void USART_interruptReceive(USART_Instance instance, FunctionalState state);
+void USART_interruptsEnable(USART_Instance instance, uint32_t priority);
 
 #endif
