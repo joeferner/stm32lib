@@ -3,9 +3,9 @@
 #include <stdio.h>
 
 volatile bool gpioInterruptOccured;
+volatile uint32_t gpioInterruptTime;
 volatile EXTI_Line gpioInterruptLine;
 volatile IRQn_Type gpioIrq;
-uint32_t lastTime;
 
 static void setup();
 static void gpio_setup();
@@ -45,7 +45,7 @@ static void gpio_setup() {
   exti.line = gpioInterruptLine;
   exti.trigger = EXTI_Trigger_falling;
   EXTI_enable(&exti);
-  GPIO_EXTILineConfig(BUTTON_PORT, BUTTON_PIN);
+  GPIO_EXTILineConfig(BUTTON_PORT, BUTTON_PIN); // must be called after EXTI_enable
   NVIC_EnableIRQ(gpioIrq);
 
   printf("gpio setup complete!\n");
@@ -53,11 +53,12 @@ static void gpio_setup() {
 
 void onExti() {
   gpioInterruptOccured = true;
+  gpioInterruptTime = time_ms();
 }
 
 static void loop() {
   if (gpioInterruptOccured) {
-    printf("interrupt!\n");
+    printf("interrupt at %lu!\n", gpioInterruptTime);
     gpioInterruptOccured = false;
   }
 }
