@@ -34,9 +34,9 @@ void HAL_USART_initParamsInit(HAL_USART_InitParams *initParams) {
 
 void HAL_USART_init(HAL_USART_InitParams *initParams) {
   uint32_t tmpReg = 0x00;
-  uint32_t clockDiv = 0x00;
-  uint32_t brrTemp = 0;
-  USART_ClockSource clocksource = USART_ClockSource_lse;
+  uint32_t apbclock;
+  uint32_t divider;
+  RCC_Clocks clocks;
 
   assert_param(IS_USART(initParams->instance));
   assert_param(IS_USART_BAUDRATE(initParams->baudRate));
@@ -46,11 +46,11 @@ void HAL_USART_init(HAL_USART_InitParams *initParams) {
   assert_param(IS_USART_MODE(initParams->mode));
   assert_param(IS_USART_HARDWARE_FLOW_CONTROL(initParams->hardwareFlowControl));
 
+  // disable
+  initParams->instance->CR1 &= ~USART_CR1_UE;
+
   // CR1
   tmpReg = initParams->instance->CR1;
-
-  tmpReg &= ~USART_STOP_BITS_mask;
-  tmpReg |= initParams->stopBits;
 
   tmpReg &= ~USART_PARITY_mask;
   tmpReg |= initParams->parity;
@@ -63,6 +63,14 @@ void HAL_USART_init(HAL_USART_InitParams *initParams) {
 
   initParams->instance->CR1 = tmpReg;
 
+  // CR2
+  tmpReg = initParams->instance->CR2;
+
+  tmpReg &= ~USART_STOP_BITS_mask;
+  tmpReg |= initParams->stopBits;
+
+  initParams->instance->CR2 = tmpReg;
+
   // CR3
   tmpReg = initParams->instance->CR3;
 
@@ -72,47 +80,46 @@ void HAL_USART_init(HAL_USART_InitParams *initParams) {
   initParams->instance->CR3 = tmpReg;
 
   /*---------------------------- USART BRR Configuration -----------------------*/
+  /* Configure the USART Baud Rate -------------------------------------------*/
+  RCC_getClocks(&clocks);
+
   if (initParams->instance == USART1) {
-    clocksource = RCC->CFGR3 & 0b11;
+    apbclock = clocks.USART1CLK_Frequency;
+  } else if (initParams->instance == USART2) {
+    apbclock = clocks.USART2CLK_Frequency;
+  } else if (initParams->instance == USART3) {
+    apbclock = clocks.USART3CLK_Frequency;
   } else {
-    assert_param(0);
+    apbclock = clocks.PCLK_Frequency;
   }
 
-  if (initParams->instance->CR1 & USART_CR1_OVER8) {
-    switch (clocksource) {
-    case USART_ClockSource_pclk:
-      clockDiv = (uint16_t)(__DIV_SAMPLING8(RCC_getPCLK1Freq(), initParams->baudRate));
-      break;
-    case USART_ClockSource_hsi:
-      clockDiv = (uint16_t)(__DIV_SAMPLING8(HSI_VALUE, initParams->baudRate));
-      break;
-    case USART_ClockSource_sysclk:
-      clockDiv = (uint16_t)(__DIV_SAMPLING8(RCC_getSysClockFreq(), initParams->baudRate));
-      break;
-    case USART_ClockSource_lse:
-      clockDiv = (uint16_t)(__DIV_SAMPLING8(LSE_VALUE, initParams->baudRate));
-      break;
-    }
-
-    brrTemp = clockDiv & 0xFFF0;
-    brrTemp |= (uint16_t)((clockDiv & (uint16_t)0x000F) >> 1U);
-    initParams->instance->BRR = brrTemp;
-  } else {
-    switch (clocksource) {
-    case USART_ClockSource_pclk:
-      initParams->instance->BRR = (uint16_t)(__DIV_SAMPLING16(RCC_getPCLK1Freq(), initParams->baudRate));
-      break;
-    case USART_ClockSource_hsi:
-      initParams->instance->BRR = (uint16_t)(__DIV_SAMPLING16(HSI_VALUE, initParams->baudRate));
-      break;
-    case USART_ClockSource_sysclk:
-      initParams->instance->BRR = (uint16_t)(__DIV_SAMPLING16(RCC_getSysClockFreq(), initParams->baudRate));
-      break;
-    case USART_ClockSource_lse:
-      initParams->instance->BRR = (uint16_t)(__DIV_SAMPLING16(LSE_VALUE, initParams->baudRate));
-      break;
-    }
+  /* Determine the integer part */
+  if ((initParams->instance->CR1 & USART_CR1_OVER8) != 0) {
+    /* (divider * 10) computing in case Oversampling mode is 8 Samples */
+    divider = (uint32_t)((2 * apbclock) / (initParams->baudRate));
+    tmpReg  = (uint32_t)((2 * apbclock) % (initParams->baudRate));
+  } else { /* if ((initParams->instance->CR1 & CR1_OVER8_Set) == 0) */
+    /* (divider * 10) computing in case Oversampling mode is 16 Samples */
+    divider = (uint32_t)((apbclock) / (initParams->baudRate));
+    tmpReg  = (uint32_t)((apbclock) % (initParams->baudRate));
   }
+
+  /* round the divider : if fractional part i greater than 0.5 increment divider */
+  if (tmpReg >= (initParams->baudRate) / 2) {
+    divider++;
+  }
+
+  /* Implement the divider in case Oversampling mode is 8 Samples */
+  if ((initParams->instance->CR1 & USART_CR1_OVER8) != 0) {
+    /* get the LSB of divider and shift it to the right by 1 bit */
+    tmpReg = (divider & (uint16_t)0x000F) >> 1;
+
+    /* update the divider value */
+    divider = (divider & (uint16_t)0xFFF0) | tmpReg;
+  }
+
+  /* Write to USART BRR */
+  initParams->instance->BRR = (uint16_t)divider;
 }
 
 void USART_enable(USART_Instance instance) {

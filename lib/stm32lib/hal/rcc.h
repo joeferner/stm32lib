@@ -31,11 +31,21 @@ typedef enum  {
   || ((v) == RCC_Peripheral_SPI1) \
 )
 
+typedef struct {
+  uint32_t SYSCLK_Frequency;
+  uint32_t HCLK_Frequency;
+  uint32_t PCLK_Frequency;
+  uint32_t ADCCLK_Frequency;
+  uint32_t CECCLK_Frequency;
+  uint32_t I2C1CLK_Frequency;
+  uint32_t USART1CLK_Frequency;
+  uint32_t USART2CLK_Frequency; /*!< Only applicable for STM32F072 and STM32F091 devices */
+  uint32_t USART3CLK_Frequency; /*!< Only applicable for STM32F091 devices */
+  uint32_t USBCLK_Frequency;    /*!< Only applicable for STM32F072 devices */
+} RCC_Clocks;
+
 void RCC_peripheralClockEnable(RCC_Peripheral set);
 void RCC_peripheralClock(RCC_Peripheral set, FunctionalState state);
-
-uint32_t RCC_getPCLK1Freq();
-uint32_t RCC_getHCLKFreq();
-uint32_t RCC_getSysClockFreq();
+void RCC_getClocks(RCC_Clocks *clocks);
 
 #endif

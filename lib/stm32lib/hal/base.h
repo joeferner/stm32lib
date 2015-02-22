@@ -6,11 +6,27 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#ifdef  USE_FULL_ASSERT
+
+/**
+  * @brief  The assert_param macro is used for function's parameters check.
+  * @param  expr: If expr is false, it calls assert_failed function which reports 
+  *         the name of the source file and the source line number of the call 
+  *         that failed. If expr is true, it returns no value.
+  * @retval None
+  */
+  #define assert_param(expr) ((expr) ? (void)0 : assert_failed((uint8_t *)__FILE__, __LINE__))
+/* Exported functions ------------------------------------------------------- */
+  void assert_failed(uint8_t* file, uint32_t line);
+#else
+  #define assert_param(expr) ((void)0)
+#endif /* USE_FULL_ASSERT */
+  
 #if defined (STM32F030x6) || defined (STM32F030x8) ||                           \
     defined (STM32F031x6) || defined (STM32F038xx) ||                           \
-    defined (STM32F042x6) || defined (STM32F048xx) || defined (STM32F070x6) || \
+    defined (STM32F042x6) || defined (STM32F048xx) || defined (STM32F070x6) ||  \
     defined (STM32F051x8) || defined (STM32F058xx) ||                           \
-    defined (STM32F071xB) || defined (STM32F072xB) || defined (STM32F078xx) || defined (STM32F070xB) || \
+    defined (STM32F071xB) || defined (STM32F072)   || defined (STM32F072xB) || defined (STM32F078xx) || defined (STM32F070xB) || \
     defined (STM32F091xC) || defined (STM32F098xx) || defined (STM32F030xC)
 #include "chip/stm32f0xx.h"
 #else
