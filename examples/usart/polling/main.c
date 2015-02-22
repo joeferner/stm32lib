@@ -1,15 +1,17 @@
 
 #include "platform_config.h"
+#include <stdio.h>
 
 volatile uint32_t bytesTransmitted;
 volatile uint32_t bytesReceived;
+volatile uint32_t lastPrint;
 
 static void setup();
 static void loop();
 void onUSARTTransmissionComplete();
 void onUSARTReceive();
 
-int main(void) {
+int main() {
   setup();
   while (1) {
     loop();
@@ -19,6 +21,11 @@ int main(void) {
 
 static void setup() {
   USART_InitParams usart;
+
+  lastPrint = 0;
+  bytesTransmitted = 0;
+  bytesReceived = 0;
+  time_setup();
 
   USART_initParamsInit(&usart);
   usart.txPort = DEBUG_TX_PORT;
@@ -33,25 +40,19 @@ static void setup() {
   usart.halUsartInitParams.hardwareFlowControl = USART_HardwareFlowControl_none;
   usart.halUsartInitParams.mode = USART_Mode_rx | USART_Mode_tx;
   USART_init(&usart);
+  USART_enable(DEBUG_USART);
 
-  bytesTransmitted = 0;
-  bytesReceived = 0;
   USART_interruptTransmissionComplete(DEBUG_USART, ENABLE);
   USART_interruptReceive(DEBUG_USART, ENABLE);
-  USART_interruptsEnable(DEBUG_USART, 1);
-
-  USART_enable(DEBUG_USART);
+  USART_interruptsEnable(DEBUG_USART);
 
   USART_txString(DEBUG_USART, "setup complete!\n");
 }
 
 static void loop() {
-  uint8_t b;
-
-  if (USART_rxHasData(DEBUG_USART)) {
-    b = USART_rx(DEBUG_USART);
-    USART_txWaitForComplete(DEBUG_USART);
-    USART_tx(DEBUG_USART, b);
+  if ((time_ms() - lastPrint) > 5000) {
+    printf("tx: %lu, rx: %lu\n", bytesTransmitted, bytesReceived);
+    lastPrint = time_ms();
   }
 }
 
@@ -60,9 +61,17 @@ void onUSARTTransmissionComplete() {
 }
 
 void onUSARTReceive() {
-  bytesReceived++;
+  uint8_t b;
+
+  while (USART_getFlagStatus(DEBUG_USART, USART_Flag_RXNE)) {
+    bytesReceived++;
+    b = USART_rx(DEBUG_USART);
+    USART_txWaitForComplete(DEBUG_USART);
+    USART_tx(DEBUG_USART, b);
+  }
 }
 
 void assert_failed(uint8_t *file, uint32_t line) {
   while (1);
 }
+

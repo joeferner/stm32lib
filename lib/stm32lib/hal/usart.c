@@ -181,14 +181,13 @@ void USART_clearFlag(USART_Instance instance, USART_Flag flag) {
   assert_param(IS_USART(instance));
   assert_param(IS_USART_FLAG(flag));
 
-  instance->ICR = flag;
+  instance->ICR = (uint32_t)flag;
 }
 
-void USART_interruptsEnable(USART_Instance instance, uint32_t priority) {
+void USART_interruptsEnable(USART_Instance instance) {
   IRQn_Type irq;
   uint32_t imr;
   assert_param(IS_USART(instance));
-  assert_param(IS_NVIC_PRIORITY(priority));
   if (instance == USART1) {
     irq = USART1_IRQn;
     imr = EXTI_IMR_MR27;
@@ -203,10 +202,11 @@ void USART_interruptsEnable(USART_Instance instance, uint32_t priority) {
     return;
   }
 
+  NVIC_DisableIRQ(irq);
+  
   EXTI->IMR = imr;
 
   NVIC_EnableIRQ(irq);
-  NVIC_SetPriority(irq, priority);
 }
 
 void USART_interruptTransmissionComplete(USART_Instance instance, FunctionalState state) {

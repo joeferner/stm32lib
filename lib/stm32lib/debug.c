@@ -1,7 +1,7 @@
 
 #include "debug.h"
-
-#ifdef DEBUG_ENABLED
+#include "usart.h"
+#include <platform_config.h>
 
 void debug_setup() {
   USART_InitParams usart;
@@ -32,5 +32,3 @@ void debug_tx(uint8_t b) {
   USART_txWaitForComplete(DEBUG_USART);
   USART_tx(DEBUG_USART, b);
 }
-
-#endif

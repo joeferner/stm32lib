@@ -11,7 +11,7 @@ typedef USART_TypeDef *USART_Instance;
     (i == USART3) || \
     (i == USART4)  \
   )
-
+  
 typedef enum {
   USART_WordLength_8b = ((0 << 28) || (0 << 12)),
   USART_WordLength_9b = ((0 << 28) || (1 << 12)),
@@ -149,6 +149,6 @@ FlagStatus USART_getFlagStatus(USART_Instance instance, USART_Flag flag);
 void USART_clearFlag(USART_Instance instance, USART_Flag flag);
 void USART_interruptTransmissionComplete(USART_Instance instance, FunctionalState state);
 void USART_interruptReceive(USART_Instance instance, FunctionalState state);
-void USART_interruptsEnable(USART_Instance instance, uint32_t priority);
+void USART_interruptsEnable(USART_Instance instance);
 
 #endif
