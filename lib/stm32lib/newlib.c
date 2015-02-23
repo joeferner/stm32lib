@@ -11,7 +11,7 @@
 extern int  __HEAP_START;
 
 #ifdef SDCARD_ENABLE
-# include "sdcard/fat.h"
+# include "device/sdcard/fat.h"
 # ifndef SDCARD_MAX_OPEN_FILES
 #  define SDCARD_MAX_OPEN_FILES 10
 # endif
@@ -19,8 +19,9 @@ extern int  __HEAP_START;
 #  define SDCARD_START_FILE_DESCRIPTOR 1000
 # endif
 
-SdcardFatFile _newlib_sdcard_sdcardFatFiles[SDCARD_MAX_OPEN_FILES];
-BOOL _newlib_sdcard_sdcardFatFilesUsed[SDCARD_MAX_OPEN_FILES] = {0};
+extern SDCardFAT NEWLIB_FAT;
+SDCardFATFile _newlib_sdcard_sdcardFatFiles[SDCARD_MAX_OPEN_FILES];
+bool _newlib_sdcard_sdcardFatFilesUsed[SDCARD_MAX_OPEN_FILES] = {0};
 
 int _newlib_sdcard_findAvailableFileSlot();
 int _newlib_sdcard_open(const char* filename, int oflag, int pmode);
@@ -157,12 +158,12 @@ caddr_t _sbrk(int incr) {
 #ifdef SDCARD_ENABLE
 
 #define SDCARD_GET                                                                        \
-  BOOL used = _newlib_sdcard_sdcardFatFilesUsed[file - SDCARD_START_FILE_DESCRIPTOR];     \
+  bool used = _newlib_sdcard_sdcardFatFilesUsed[file - SDCARD_START_FILE_DESCRIPTOR];     \
   if (!used) {                                                                            \
     errno = EBADF;                                                                        \
     return -1;                                                                            \
   }                                                                                       \
-  SdcardFatFile* f = &_newlib_sdcard_sdcardFatFiles[file - SDCARD_START_FILE_DESCRIPTOR];
+  SDCardFATFile* f = &_newlib_sdcard_sdcardFatFiles[file - SDCARD_START_FILE_DESCRIPTOR];
 
 int _newlib_sdcard_open(const char* filename, int oflag, int pmode) {
   int fileIndex = _newlib_sdcard_findAvailableFileSlot();
@@ -170,29 +171,29 @@ int _newlib_sdcard_open(const char* filename, int oflag, int pmode) {
     errno = EMFILE;
     return -1;
   }
-  SdcardFatFile* f = &_newlib_sdcard_sdcardFatFiles[fileIndex];
-  if (!sdcard_fat_file_open(f, filename, oflag)) {
+  SDCardFATFile* f = &_newlib_sdcard_sdcardFatFiles[fileIndex];
+  if (!SDCardFATFile_open(&NEWLIB_FAT, f, filename, oflag)) {
     errno = ENOENT;
     return -1;
   }
-  _newlib_sdcard_sdcardFatFilesUsed[fileIndex] = TRUE;
+  _newlib_sdcard_sdcardFatFilesUsed[fileIndex] = true;
   return SDCARD_START_FILE_DESCRIPTOR + fileIndex;
 }
 
 int _newlib_sdcard_read(int file, char* ptr, int len) {
   SDCARD_GET;
-  return sdcard_fat_file_read(f, (uint8_t*)ptr, len);
+  return SDCardFATFile_read(&NEWLIB_FAT, f, (uint8_t*)ptr, len);
 }
 
 int _newlib_sdcard_write(int file, char* ptr, int len) {
   SDCARD_GET;
-  return sdcard_fat_file_write(f, (uint8_t*)ptr, len);
+  return SDCardFATFile_write(&NEWLIB_FAT, f, (uint8_t*)ptr, len);
 }
 
 int _newlib_sdcard_close(int file) {
   SDCARD_GET;
-  sdcard_fat_file_close(f);
-  _newlib_sdcard_sdcardFatFilesUsed[file - SDCARD_START_FILE_DESCRIPTOR] = FALSE;
+  SDCardFATFile_close(&NEWLIB_FAT, f);
+  _newlib_sdcard_sdcardFatFilesUsed[file - SDCARD_START_FILE_DESCRIPTOR] = false;
   return 0;
 }
 
@@ -206,11 +207,11 @@ int _newlib_sdcard_fstat(int file, struct stat* st) {
 int _newlib_sdcard_lseek(int file, int ptr, int dir) {
   SDCARD_GET;
   if (dir == SEEK_SET) {
-    sdcard_fat_file_seek(f, ptr);
+    SDCardFATFile_seek(&NEWLIB_FAT, f, ptr);
   } else if (dir == SEEK_CUR) {
-    sdcard_fat_file_seek(f, f->currentPosition + ptr);
+    SDCardFATFile_seek(&NEWLIB_FAT, f, f->currentPosition + ptr);
   } else if (dir == SEEK_END) {
-    sdcard_fat_file_seek(f, f->fileSize + ptr);
+    SDCardFATFile_seek(&NEWLIB_FAT, f, f->fileSize + ptr);
   } else {
     errno = EINVAL;
     return -1;

@@ -1,6 +1,7 @@
 
-#define DEBUG_ENABLED
-#define DEBUG_RCC     RCC_Peripheral_GPIOA | RCC_Peripheral_AFIO | RCC_Peripheral_USART1
+#ifndef PLATFORM_CONFIG_H_INCLUDED
+#define PLATFORM_CONFIG_H_INCLUDED
+
 #define DEBUG_USART   USART1
 #define DEBUG_BAUD    9600
 #define DEBUG_TX_PORT GPIOA
@@ -14,3 +15,5 @@
 #include <stm32lib/debug.h>
 #include <stm32lib/rcc.h>
 #include <stm32lib/time.h>
+
+#endif /* PLATFORM_CONFIG_H_INCLUDED */

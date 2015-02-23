@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-PROJECT_NAME=$(basename $(pwd))
+PROJECT_NAME=$(sed -n -e 's/PROJECT(\(.*\))/\1/p' CMakeLists.txt)
 echo "Building project ${PROJECT_NAME}"
 
 function get_flash_and_ram {

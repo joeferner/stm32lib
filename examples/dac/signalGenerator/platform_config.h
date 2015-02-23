@@ -1,5 +1,4 @@
 
-#define DEBUG_ENABLED
 #define DEBUG_RCC     RCC_Peripheral_GPIOA | RCC_Peripheral_AFIO | RCC_Peripheral_USART1
 #define DEBUG_USART   USART1
 #define DEBUG_BAUD    9600
