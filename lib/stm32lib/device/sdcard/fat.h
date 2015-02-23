@@ -135,7 +135,8 @@ typedef struct {
 
 void SDCardFAT_getTime(SDCardFAT *fat, SDCardFATFile *f, uint16_t *creationDate, uint16_t *creationTime);
 
-bool SDCardFAT_setup(SDCardFAT *fat);
+void SDCardFAT_initParamsInit(SDCardFAT *fat);
+bool SDCardFAT_init(SDCardFAT *fat);
 bool SDCardFATFile_open(SDCardFAT *fat, SDCardFATFile *f, const char *filePath, int mode);
 void SDCardFATFile_close(SDCardFAT *fat, SDCardFATFile *f);
 bool SDCardFATFile_seek(SDCardFAT *fat, SDCardFATFile *f, uint32_t pos);

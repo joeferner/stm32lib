@@ -61,7 +61,14 @@ bool _SDCardFATFile_truncate(SDCardFAT *fat, SDCardFATFile *f, uint32_t length);
 bool _SDCardFATFile_sync(SDCardFAT *fat, SDCardFATFile *f);
 bool _SDCardFATFile_addCluster(SDCardFAT *fat, SDCardFATFile *f);
 
-bool SDCardFAT_setup(SDCardFAT *fat) {
+void SDCardFAT_initParamsInit(SDCardFAT *fat) {
+  memset(fat, 0, sizeof(SDCardFAT));
+  SDCard_initParamsInit(&fat->sdcard);
+}
+
+bool SDCardFAT_init(SDCardFAT *fat) {
+  SDCard_init(&fat->sdcard);
+  
   printf("BEGIN SDCard Fat Setup\n");
   fat->cacheBlockNumber = 0XFFFFFFFF;
   fat->cacheDirty = 0;
