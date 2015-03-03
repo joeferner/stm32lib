@@ -8,6 +8,7 @@ typedef SPI_TypeDef *SPI_Instance;
 
 #define IS_SPI_INSTANCE(s) ( \
   ((s) == SPI1) \
+  || ((s) == SPI2) \
 )
 
 typedef enum {

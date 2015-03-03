@@ -32,7 +32,6 @@ uint8_t _SDCard_waitStartBlock(SDCard_InitParams *initParams);
 uint8_t _SDCard_waitNotBusy(SDCard_InitParams *initParams, uint16_t timeoutMillis);
 
 void SDCard_initParamsInit(SDCard_InitParams *initParams) {
-  initParams->initializeSpi = false;
   initParams->spiInstance = NULL;
   initParams->csPort = NULL;
   initParams->csPin = -1;
@@ -44,7 +43,6 @@ bool SDCard_init(SDCard_InitParams *initParams) {
   uint32_t arg;
   uint8_t status;
   GPIO_InitParams gpio;
-  SPI_InitParams spiInit;
 
   GPIO_initParamsInit(&gpio);
   gpio.mode = GPIO_Mode_output;
@@ -56,14 +54,10 @@ bool SDCard_init(SDCard_InitParams *initParams) {
   GPIO_init(&gpio);
   _SDCard_cs_deassert(initParams);
 
-  if (initParams->initializeSpi) {
-    SPI_initParamsInit(&spiInit);
-    spiInit.halSpiInitParams.instance = initParams->spiInstance;
-    spiInit.halSpiInitParams.cpol = SPI_CPOL_low;
-    spiInit.halSpiInitParams.cpha = SPI_CPHA_1Edge;
-    SPI_init(&spiInit);
-  }
-
+  RCC_TypeDef *zrcc = RCC;
+  SPI_TypeDef *zspi = SPI2;
+  GPIO_TypeDef *zgpio = GPIOB;
+  
   // must supply min of 74 clock cycles with CS high.
   for (uint8_t i = 0; i < 10; i++) {
     _SDCard_spiTransfer(initParams, 0XFF);

@@ -24,7 +24,14 @@ void SPI_init(SPI_InitParams *initParams) {
       && initParams->mosiPort == GPIOA && initParams->mosiPin == GPIO_Pin_7
       && initParams->misoPort == GPIOA && initParams->misoPin == GPIO_Pin_6
       && initParams->sckPort == GPIOA && initParams->sckPin == GPIO_Pin_5) {
+    RCC_peripheralClockEnableForPort(GPIOA);
     GPIO_setAlternateFunction(GPIOA, GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7, 0);
+  } else if (initParams->halSpiInitParams.instance == SPI2
+      && initParams->mosiPort == GPIOB && initParams->mosiPin == GPIO_Pin_15
+      && initParams->misoPort == GPIOB && initParams->misoPin == GPIO_Pin_14
+      && initParams->sckPort == GPIOB && initParams->sckPin == GPIO_Pin_13) {
+    RCC_peripheralClockEnableForPort(GPIOB);
+    GPIO_setAlternateFunction(GPIOB, GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15, 0);
   } else {
     assert_param(0);
   }

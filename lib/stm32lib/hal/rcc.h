@@ -15,7 +15,8 @@ typedef enum  {
   RCC_Peripheral_GPIOF  = 0x0000080,
   RCC_Peripheral_DAC    = 0x0000100,
   RCC_Peripheral_USART1 = 0x0000200,
-  RCC_Peripheral_SPI1   = 0x0000400
+  RCC_Peripheral_SPI1   = 0x0000400,
+  RCC_Peripheral_SPI2   = 0x0000800
 } RCC_Peripheral;
 #define IS_RCC_PERIPHERAL(v) ( \
   ((v) == RCC_Peripheral_AFIO) \
@@ -29,6 +30,7 @@ typedef enum  {
   || ((v) == RCC_Peripheral_DAC) \
   || ((v) == RCC_Peripheral_USART1) \
   || ((v) == RCC_Peripheral_SPI1) \
+  || ((v) == RCC_Peripheral_SPI2) \
 )
 
 typedef struct {

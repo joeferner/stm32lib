@@ -7,8 +7,10 @@
 #include "../../hal/gpio.h"
 #include "../../spi.h"
 
+#define SDCARD_SPI_CPOL SPI_CPOL_low
+#define SDCARD_SPI_CPHA SPI_CPHA_1Edge
+
 typedef struct {
-  bool initializeSpi;
   SPI_Instance spiInstance;
   GPIO_Port csPort;
   GPIO_Pin csPin;
