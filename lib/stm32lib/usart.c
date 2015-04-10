@@ -24,6 +24,7 @@ void USART_init(USART_InitParams *initParams) {
   RCC_peripheralClockEnableForPort(initParams->rxPort);
 
   // GPIO AFIO
+#ifdef STM32F0XX
   if (initParams->halUsartInitParams.instance == USART1
       && initParams->txPort == GPIOA && initParams->txPin == GPIO_Pin_9
       && initParams->rxPort == GPIOA && initParams->rxPin == GPIO_Pin_10) {
@@ -31,18 +32,30 @@ void USART_init(USART_InitParams *initParams) {
   } else {
     assert_param(0);
   }
+#elif defined(STM32F10X)
+  if (initParams->halUsartInitParams.instance == USART1
+      && initParams->txPort == GPIOA && initParams->txPin == GPIO_Pin_9
+      && initParams->rxPort == GPIOA && initParams->rxPin == GPIO_Pin_10) {
+    GPIO_setAlternateFunction(GPIOA, GPIO_Pin_9 | GPIO_Pin_10, 0);
+  } else {
+    assert_param(0);
+  }
+#else
+#  error "No valid chip defined"
+#endif
 
   // GPIO
   GPIO_initParamsInit(&gpio);
   gpio.port = initParams->txPort;
   gpio.pin = initParams->txPin;
-  gpio.mode = GPIO_Mode_alternateFunction;
+  gpio.mode = GPIO_Mode_alternateFunctionOutput;
   gpio.outputType = GPIO_OutputType_pushPull;
   gpio.speed = GPIO_Speed_high;
   GPIO_init(&gpio);
 
   gpio.port = initParams->rxPort;
   gpio.pin = initParams->rxPin;
+  gpio.mode = GPIO_Mode_alternateFunctionInput;
   GPIO_init(&gpio);
 
   HAL_USART_init(&initParams->halUsartInitParams);

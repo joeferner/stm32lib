@@ -174,9 +174,9 @@ void USART_setState(USART_Instance instance, FunctionalState state) {
   assert_param(IS_FUNCTIONAL_STATE(state));
 
   if (state != DISABLE) {
-    instance->CR1 |= 0b1;
+    instance->CR1 |= USART_CR1_UE;
   } else {
-    instance->CR1 &= 0b0;
+    instance->CR1 &= ~USART_CR1_UE;
   }
 }
 

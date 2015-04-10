@@ -51,17 +51,31 @@ typedef enum {
     || ((v) == GPIO_Pin_15) \
   )
 
+#ifdef STM32F0XX
 typedef enum {
   GPIO_Mode_input = 0b00,
   GPIO_Mode_output = 0b01,
-  GPIO_Mode_alternateFunction = 0b10,
+  GPIO_Mode_alternateFunctionInput = 0b10,
+  GPIO_Mode_alternateFunctionOutput = 0b10,
   GPIO_Mode_analog = 0b11
 } GPIO_Mode;
+#elif defined(STM32F10X)
+typedef enum {
+  GPIO_Mode_input = 1,
+  GPIO_Mode_output = 2,
+  GPIO_Mode_alternateFunctionInput = 3,
+  GPIO_Mode_alternateFunctionOutput = 4,
+  GPIO_Mode_analog = 5
+} GPIO_Mode;
+#else
+#  error "No valid chip defined"
+#endif
 #define GPIO_Mode_default GPIO_Mode_input
 #define IS_GPIO_MODE(v) ( \
     ((v) == GPIO_Mode_input) \
     || ((v) == GPIO_Mode_output) \
-    || ((v) == GPIO_Mode_alternateFunction) \
+    || ((v) == GPIO_Mode_alternateFunctionInput) \
+    || ((v) == GPIO_Mode_alternateFunctionOutput) \
     || ((v) == GPIO_Mode_analog) \
   )
 

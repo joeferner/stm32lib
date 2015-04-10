@@ -74,19 +74,19 @@ void RCC_peripheralClock(RCC_Peripheral set, FunctionalState state) {
   if (set & RCC_Peripheral_SYSCFG)   {
   }
   if (set & RCC_Peripheral_GPIOA)  {
-    ahbenr |= RCC_APB2ENR_IOPAEN;
+    apb2enr |= RCC_APB2ENR_IOPAEN;
   }
   if (set & RCC_Peripheral_GPIOB)  {
-    ahbenr |= RCC_APB2ENR_IOPBEN;
+    apb2enr |= RCC_APB2ENR_IOPBEN;
   }
   if (set & RCC_Peripheral_GPIOC)  {
-    ahbenr |= RCC_APB2ENR_IOPCEN;
+    apb2enr |= RCC_APB2ENR_IOPCEN;
   }
   if (set & RCC_Peripheral_GPIOD)  {
-    ahbenr |= RCC_APB2ENR_IOPDEN;
+    apb2enr |= RCC_APB2ENR_IOPDEN;
   }
   if (set & RCC_Peripheral_GPIOE)  {
-    ahbenr |= RCC_APB2ENR_IOPEEN;
+    apb2enr |= RCC_APB2ENR_IOPEEN;
   }
   if (set & RCC_Peripheral_GPIOF)  {
     assert_param(0);

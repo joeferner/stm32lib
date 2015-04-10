@@ -78,13 +78,13 @@ void GPIO_init(GPIO_InitParams *initParams) {
       pin4bitMask = 0b1111 << pos4bit;
 
       tmp = 0;
-      if (initParams->mode == GPIO_Mode_input) {
+      if (initParams->mode == GPIO_Mode_input || initParams->mode == GPIO_Mode_alternateFunctionInput) {
         if (initParams->pullUpDown == GPIO_PullUpDown_no) {
           tmp |= 0b0100;
         } else {
           tmp |= 0b1000;
         }
-      } else if (initParams->mode == GPIO_Mode_output) {
+      } else if (initParams->mode == GPIO_Mode_output || initParams->mode == GPIO_Mode_alternateFunctionOutput) {
         if (initParams->speed == GPIO_Speed_low) {
           tmp |= 0b0010;
         } else if (initParams->speed == GPIO_Speed_medium) {
@@ -93,8 +93,16 @@ void GPIO_init(GPIO_InitParams *initParams) {
           tmp |= 0b0011;
         }
 
-        if (initParams->outputType == GPIO_OutputType_openDrain) {
-          tmp |= 0b0100;
+        if (initParams->mode == GPIO_Mode_alternateFunctionOutput) {
+          if (initParams->outputType == GPIO_OutputType_openDrain) {
+            tmp |= 0b1100;
+          } else {
+            tmp |= 0b1000;
+          }
+        } else {
+          if (initParams->outputType == GPIO_OutputType_openDrain) {
+            tmp |= 0b0100;
+          }
         }
       } else if (initParams->mode == GPIO_Mode_analog) {
         tmp |= 0b0000;
@@ -174,7 +182,7 @@ void GPIO_setAlternateFunction(GPIO_Port port, GPIO_Pin pin, uint8_t af) {
   }
   port->AFR[1] = tmp;
 #elif defined (STM32F10X)
-  if(af == 0) {
+  if (af == 0) {
     return; // Default AF is determined by GPIO Init
   }
   assert_param(0);
