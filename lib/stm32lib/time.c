@@ -1,5 +1,5 @@
 #include "time.h"
-#include "hal/chip/chip.h"
+#include "hal/base.h"
 
 extern uint32_t SystemCoreClock;
 volatile uint32_t _time_counter_ms = 0;

@@ -36,14 +36,20 @@ typedef enum  {
 typedef struct {
   uint32_t SYSCLK_Frequency;
   uint32_t HCLK_Frequency;
-  uint32_t PCLK_Frequency;
   uint32_t ADCCLK_Frequency;
+#ifdef STM32F0XX
+  uint32_t PCLK_Frequency;
   uint32_t CECCLK_Frequency;
   uint32_t I2C1CLK_Frequency;
   uint32_t USART1CLK_Frequency;
   uint32_t USART2CLK_Frequency; /*!< Only applicable for STM32F072 and STM32F091 devices */
   uint32_t USART3CLK_Frequency; /*!< Only applicable for STM32F091 devices */
   uint32_t USBCLK_Frequency;    /*!< Only applicable for STM32F072 devices */
+#endif
+#ifdef STM32F10X
+  uint32_t PCLK1_Frequency;
+  uint32_t PCLK2_Frequency;
+#endif
 } RCC_Clocks;
 
 void RCC_peripheralClockEnable(RCC_Peripheral set);

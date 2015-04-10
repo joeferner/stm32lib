@@ -14,20 +14,22 @@ void GPIO_initParamsInit(GPIO_InitParams *initParams) {
 }
 
 void GPIO_init(GPIO_InitParams *initParams) {
-  uint32_t pinPos = 0;
-  uint32_t pos = 0;
-  uint32_t pos2bit = 0;
-  uint32_t tmpMODER = 0;
-  uint32_t tmpOTYPER = 0;
-  uint32_t tmpOSPEEDR = 0;
-  uint32_t tmpPUPDR = 0;
-  uint32_t pinMask = 0;
-  uint32_t pin2bitMask = 0;
   assert_param(IS_GPIO_PORT(initParams->port));
   assert_param(IS_GPIO_MODE(initParams->mode));
   assert_param(IS_GPIO_OUTPUT_TYPE(initParams->outputType));
   assert_param(IS_GPIO_SPEED(initParams->speed));
   assert_param(IS_GPIO_PULL_UP_DOWN(initParams->pullUpDown));
+
+  uint32_t pinPos = 0;
+  uint32_t pos = 0;
+#ifdef STM32F0XX
+  uint32_t pinMask = 0;
+  uint32_t pos2bit = 0;
+  uint32_t pin2bitMask = 0;
+  uint32_t tmpMODER = 0;
+  uint32_t tmpOTYPER = 0;
+  uint32_t tmpOSPEEDR = 0;
+  uint32_t tmpPUPDR = 0;
 
   tmpMODER = initParams->port->MODER;
   tmpOTYPER = initParams->port->OTYPER;
@@ -57,6 +59,62 @@ void GPIO_init(GPIO_InitParams *initParams) {
   initParams->port->OTYPER = tmpOTYPER;
   initParams->port->OSPEEDR = tmpOSPEEDR;
   initParams->port->PUPDR = tmpPUPDR;
+
+#elif defined (STM32F10X)
+  bool lowReg = false;
+  uint32_t pos4bit = 0;
+  uint32_t pin4bitMask = 0;
+  uint32_t tmpCRL = 0;
+  uint32_t tmpCRH = 0;
+  uint8_t tmp = 0;
+
+  tmpCRL = initParams->port->CRL;
+  tmpCRH = initParams->port->CRH;
+  for (pinPos = 0; pinPos < 16; pinPos++) {
+    pos = 1 << pinPos;
+    if (initParams->pin & pos) {
+      lowReg = pinPos < 8;
+      pos4bit = (pinPos - (lowReg ? 0 : 8)) * 4;
+      pin4bitMask = 0b1111 << pos4bit;
+
+      tmp = 0;
+      if (initParams->mode == GPIO_Mode_input) {
+        if (initParams->pullUpDown == GPIO_PullUpDown_no) {
+          tmp |= 0b0100;
+        } else {
+          tmp |= 0b1000;
+        }
+      } else if (initParams->mode == GPIO_Mode_output) {
+        if (initParams->speed == GPIO_Speed_low) {
+          tmp |= 0b0010;
+        } else if (initParams->speed == GPIO_Speed_medium) {
+          tmp |= 0b0001;
+        } else {
+          tmp |= 0b0011;
+        }
+
+        if (initParams->outputType == GPIO_OutputType_openDrain) {
+          tmp |= 0b0100;
+        }
+      } else if (initParams->mode == GPIO_Mode_analog) {
+        tmp |= 0b0000;
+      }
+
+      if (lowReg) {
+        tmpCRL &= ~pin4bitMask;
+        tmpCRL |= tmp << pos4bit;
+      } else {
+        tmpCRH &= ~pin4bitMask;
+        tmpCRH |= tmp << pos4bit;
+      }
+    }
+  }
+
+  initParams->port->CRL = tmpCRL;
+  initParams->port->CRH = tmpCRH;
+#else
+#  error "No valid chip defined"
+#endif
 }
 
 void GPIO_setBits(GPIO_Port port, GPIO_Pin pin) {
@@ -89,11 +147,12 @@ GPIO_BitAction GPIO_readInputBit(GPIO_Port port, GPIO_Pin pin) {
 }
 
 void GPIO_setAlternateFunction(GPIO_Port port, GPIO_Pin pin, uint8_t af) {
+  assert_param(af <= 0xf);
+
+#ifdef STM32F0XX
   uint32_t pinPos;
   uint32_t pos;
   uint32_t tmp;
-
-  assert_param(af <= 0xf);
 
   tmp = port->AFR[0];
   for (pinPos = 0; pinPos < 8; pinPos++) {
@@ -114,6 +173,14 @@ void GPIO_setAlternateFunction(GPIO_Port port, GPIO_Pin pin, uint8_t af) {
     }
   }
   port->AFR[1] = tmp;
+#elif defined (STM32F10X)
+  if(af == 0) {
+    return; // Default AF is determined by GPIO Init
+  }
+  assert_param(0);
+#else
+#  error "No valid chip defined"
+#endif
 }
 
 uint32_t _GPIO_portToEXTIPortSource(GPIO_Port port) {
@@ -169,8 +236,15 @@ void GPIO_EXTILineConfig(GPIO_Port port, GPIO_Pin pin) {
   uint32_t portSource = _GPIO_portToEXTIPortSource(port);
   uint32_t pinSource = _GPIO_pinToEXTIPinSource(pin);
 
+#ifdef STM32F0XX
   tmp = ((uint32_t)0x0F) << (0x04 * (pinSource & (uint8_t)0x03));
   SYSCFG->EXTICR[pinSource >> 0x02] &= ~tmp;
   SYSCFG->EXTICR[pinSource >> 0x02] |= (((uint32_t)portSource) << (0x04 * (pinSource & (uint8_t)0x03)));
+#elif defined (STM32F10X)
+  assert_param(0);
+#else
+#  error "No valid chip defined"
+#endif
 }
+
 

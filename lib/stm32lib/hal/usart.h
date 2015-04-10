@@ -5,12 +5,20 @@
 #include "base.h"
 
 typedef USART_TypeDef *USART_Instance;
+#ifdef USART4
 #define IS_USART(i) ( \
     (i == USART1) || \
     (i == USART2) || \
     (i == USART3) || \
     (i == USART4)  \
   )
+#else
+#define IS_USART(i) ( \
+    (i == USART1) || \
+    (i == USART2) || \
+    (i == USART3) \
+  )
+#endif
   
 typedef enum {
   USART_WordLength_8b = ((0 << 28) || (0 << 12)),
@@ -73,6 +81,7 @@ typedef enum {
   )
 #define USART_MODE_mask (USART_Mode_tx | USART_Mode_rx)
 
+#ifdef STM32F0XX
 typedef enum {
   USART_Flag_PE    = 0x00000001,
   USART_Flag_FE    = 0x00000002,
@@ -121,6 +130,34 @@ typedef enum {
   || ((v) == USART_Flag_TEACK) \
   || ((v) == USART_Flag_REACK) \
 )
+#elif defined (STM32F10X)
+typedef enum {
+  USART_Flag_PE    = 0x00000001,
+  USART_Flag_FE    = 0x00000002,
+  USART_Flag_NE    = 0x00000004,
+  USART_Flag_ORE   = 0x00000008,
+  USART_Flag_IDLE  = 0x00000010,
+  USART_Flag_RXNE  = 0x00000020,
+  USART_Flag_TC    = 0x00000040,
+  USART_Flag_TXE   = 0x00000080,
+  USART_Flag_LBD   = 0x00000100,
+  USART_Flag_CTS   = 0x00000200
+} USART_Flag;
+#define IS_USART_FLAG(v) ( \
+  ((v) == USART_Flag_PE) \
+  || ((v) == USART_Flag_FE) \
+  || ((v) == USART_Flag_NE) \
+  || ((v) == USART_Flag_ORE) \
+  || ((v) == USART_Flag_IDLE) \
+  || ((v) == USART_Flag_RXNE) \
+  || ((v) == USART_Flag_TC) \
+  || ((v) == USART_Flag_TXE) \
+  || ((v) == USART_Flag_LBD) \
+  || ((v) == USART_Flag_CTS) \
+)
+#else
+#  error "No valid chip defined"
+#endif
 
 #define IS_USART_DATA(d)            ((d) <= 0x1FF)
 #define IS_USART_BAUDRATE(b)        (((b) > 0) && ((b) < 0x0044AA21))

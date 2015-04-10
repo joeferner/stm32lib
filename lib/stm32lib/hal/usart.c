@@ -36,7 +36,6 @@ void HAL_USART_initParamsInit(HAL_USART_InitParams *initParams) {
 void HAL_USART_init(HAL_USART_InitParams *initParams) {
   uint32_t tmpReg = 0x00;
   uint32_t apbclock;
-  uint32_t divider;
   RCC_Clocks clocks;
 
   assert_param(IS_USART(initParams->instance));
@@ -84,6 +83,9 @@ void HAL_USART_init(HAL_USART_InitParams *initParams) {
   /* Configure the USART Baud Rate -------------------------------------------*/
   RCC_getClocks(&clocks);
 
+#ifdef STM32F0XX
+  uint32_t divider;
+
   if (initParams->instance == USART1) {
     apbclock = clocks.USART1CLK_Frequency;
   } else if (initParams->instance == USART2) {
@@ -121,6 +123,42 @@ void HAL_USART_init(HAL_USART_InitParams *initParams) {
 
   /* Write to USART BRR */
   initParams->instance->BRR = (uint16_t)divider;
+
+#elif defined(STM32F10X)
+  uint32_t integerdivider;
+  uint32_t fractionaldivider;
+
+  if (initParams->instance == USART1) {
+    apbclock = clocks.PCLK2_Frequency;
+  } else {
+    apbclock = clocks.PCLK1_Frequency;
+  }
+
+  /* Determine the integer part */
+  if ((initParams->instance->CR1 & USART_CR1_OVER8) != 0) {
+    /* Integer part computing in case Oversampling mode is 8 Samples */
+    integerdivider = ((25 * apbclock) / (2 * (initParams->baudRate)));
+  } else {
+    /* Integer part computing in case Oversampling mode is 16 Samples */
+    integerdivider = ((25 * apbclock) / (4 * (initParams->baudRate)));
+  }
+  tmpReg = (integerdivider / 100) << 4;
+
+  /* Determine the fractional part */
+  fractionaldivider = integerdivider - (100 * (tmpReg >> 4));
+
+  /* Implement the fractional part in the register */
+  if ((initParams->instance->CR1 & USART_CR1_OVER8) != 0) {
+    tmpReg |= ((((fractionaldivider * 8) + 50) / 100)) & ((uint8_t)0x07);
+  } else {
+    tmpReg |= ((((fractionaldivider * 16) + 50) / 100)) & ((uint8_t)0x0F);
+  }
+
+  /* Write to USART BRR */
+  initParams->instance->BRR = (uint16_t)tmpReg;
+#else
+#  error "No valid chip defined"
+#endif
 }
 
 void USART_enable(USART_Instance instance) {
@@ -148,13 +186,25 @@ bool USART_rxHasData(USART_Instance instance) {
 
 uint16_t USART_rx(USART_Instance instance) {
   assert_param(IS_USART(instance));
+#ifdef STM32F0XX
   return (uint16_t)(instance->RDR & (uint16_t)0x01FF);
+#elif defined (STM32F10X)
+  return (uint16_t)(instance->DR & (uint16_t)0x01FF);
+#else
+#  error "No valid chip defined"
+#endif
 }
 
 void USART_tx(USART_Instance instance, uint8_t b) {
   assert_param(IS_USART(instance));
   assert_param(IS_USART_DATA(b));
+#ifdef STM32F0XX
   instance->TDR = (b & (uint16_t)0x01FF);
+#elif defined (STM32F10X)
+  instance->DR = (b & (uint16_t)0x01FF);
+#else
+#  error "No valid chip defined"
+#endif
 }
 
 bool USART_txComplete(USART_Instance instance) {
@@ -169,7 +219,15 @@ FlagStatus USART_getFlagStatus(USART_Instance instance, USART_Flag flag) {
   assert_param(IS_USART(instance));
   assert_param(IS_USART_FLAG(flag));
 
-  if ((instance->ISR & flag) != RESET) {
+#ifdef STM32F0XX
+  uint32_t sr = instance->ISR;
+#elif defined (STM32F10X)
+  uint32_t sr = instance->SR;
+#else
+#  error "No valid chip defined"
+#endif
+
+  if ((sr & flag) != RESET) {
     return SET;
   } else {
     return RESET;
@@ -180,13 +238,21 @@ void USART_clearFlag(USART_Instance instance, USART_Flag flag) {
   assert_param(IS_USART(instance));
   assert_param(IS_USART_FLAG(flag));
 
+#ifdef STM32F0XX
   instance->ICR = (uint32_t)flag;
+#elif defined (STM32F10X)
+  instance->SR = (uint32_t)flag;
+#else
+#  error "No valid chip defined"
+#endif
 }
 
 void USART_interruptsEnable(USART_Instance instance) {
   IRQn_Type irq;
   uint32_t imr;
   assert_param(IS_USART(instance));
+
+#ifdef STM32F0XX
   if (instance == USART1) {
     irq = USART1_IRQn;
     imr = EXTI_IMR_MR27;
@@ -200,10 +266,27 @@ void USART_interruptsEnable(USART_Instance instance) {
     assert_param(0);
     return;
   }
+#elif defined (STM32F10X)
+  imr = 0;
+  if (instance == USART1) {
+    irq = USART1_IRQn;
+  } else if (instance == USART2) {
+    irq = USART2_IRQn;
+  } else if (instance == USART3) {
+    irq = USART3_IRQn;
+  } else {
+    assert_param(0);
+    return;
+  }
+#else
+#  error "No valid chip defined"
+#endif
 
   NVIC_DisableIRQ(irq);
-  
-  EXTI->IMR = imr;
+
+  if (imr > 0) {
+    EXTI->IMR = imr;
+  }
 
   NVIC_EnableIRQ(irq);
 }

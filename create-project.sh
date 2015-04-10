@@ -18,6 +18,17 @@ STM32F072xB|STM32F072RBT6)
   STM32_CHIP_DEF=STM32F072
   STM32_FLASH_SIZE=$(echo "128 * 1024" | bc)
   STM32_RAM_SIZE=$(echo "16 * 1024" | bc)
+  SYSTEM_FILE_NAME=system_stm32f0xx.c
+  STARTUP_FILE_NAME=startup_stm32f072xb.s
+  LINKER_FILE_NAME=stm32f072rb_flash.ld
+  ;;
+STM32F103RBT6)
+  STM32_CHIP_DEF=STM32F10X_MD
+  STM32_FLASH_SIZE=$(echo "128 * 1024" | bc)
+  STM32_RAM_SIZE=$(echo "20 * 1024" | bc)
+  SYSTEM_FILE_NAME=system_stm32f10x.c
+  STARTUP_FILE_NAME=startup_stm32f10x_md.s
+  LINKER_FILE_NAME=stm32f10x_md_flash.ld
   ;;
 *)
   die "invalid chip"
@@ -50,16 +61,14 @@ if [ ! -f run-st-util-server.sh ]; then
   cp ${PROJECT_TEMPLATE_DIR}/run-st-util-server.sh run-st-util-server.sh
 fi
 
-STARTUP_FILE_NAME=startup_stm32f072xb.s
 if [ ! -f ${STARTUP_FILE_NAME} ]; then
   echo "Creating ${STARTUP_FILE_NAME}"
   cp ${PROJECT_TEMPLATE_DIR}/startup/${STARTUP_FILE_NAME} ${STARTUP_FILE_NAME}
 fi
 
-LINKER_FILE_NAME=stm32f072rb_flash.ld
 if [ ! -f ${LINKER_FILE_NAME} ]; then
   echo "Creating ${LINKER_FILE_NAME}"
-  cp ${PROJECT_TEMPLATE_DIR}/${LINKER_FILE_NAME} ${LINKER_FILE_NAME}
+  cp ${PROJECT_TEMPLATE_DIR}/linker/${LINKER_FILE_NAME} ${LINKER_FILE_NAME}
 fi
 
 if [ ! -f gcc_stm32.cmake ]; then
@@ -82,10 +91,9 @@ if [ ! -f interrupts.c ]; then
   cp ${PROJECT_TEMPLATE_DIR}/interrupts.c interrupts.c
 fi
 
-SYSTEM_FILE_NAME=system_stm32f0xx.c
 if [ ! -f ${SYSTEM_FILE_NAME} ]; then
   echo "Creating ${SYSTEM_FILE_NAME}"
-  cp ${PROJECT_TEMPLATE_DIR}/${SYSTEM_FILE_NAME} ${SYSTEM_FILE_NAME}
+  cp ${PROJECT_TEMPLATE_DIR}/system/${SYSTEM_FILE_NAME} ${SYSTEM_FILE_NAME}
 fi
 
 if [ ! -f CMakeLists.txt ]; then

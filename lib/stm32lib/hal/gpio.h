@@ -55,14 +55,14 @@ typedef enum {
   GPIO_Mode_input = 0b00,
   GPIO_Mode_output = 0b01,
   GPIO_Mode_alternateFunction = 0b10,
-  GPIO_Mode_analog = 0b11,
+  GPIO_Mode_analog = 0b11
 } GPIO_Mode;
 #define GPIO_Mode_default GPIO_Mode_input
 #define IS_GPIO_MODE(v) ( \
-    ((v) == GPIO_Mode_input) || \
-    ((v) == GPIO_Mode_output) || \
-    ((v) == GPIO_Mode_alternateFunction) || \
-    ((v) == GPIO_Mode_analog) \
+    ((v) == GPIO_Mode_input) \
+    || ((v) == GPIO_Mode_output) \
+    || ((v) == GPIO_Mode_alternateFunction) \
+    || ((v) == GPIO_Mode_analog) \
   )
 
 typedef enum {
