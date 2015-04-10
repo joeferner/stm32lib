@@ -35,6 +35,7 @@ typedef enum {
   || ((m) == SPI_Mode_slave) \
 )
 
+#ifdef STM32F0XX
 typedef enum {
   SPI_DataSize_4b = 0x300,
   SPI_DataSize_5b = 0x400,
@@ -73,6 +74,16 @@ typedef enum {
   || ((d) == SPI_DataSize_7b) \
   || ((d) == SPI_DataSize_8b) \
 )
+#elif defined(STM32F10X)
+typedef enum {
+  SPI_DataSize_8b = 0x700,
+} SPI_DataSize;
+#define IS_SPI_DATASIZE(d) ( \
+  ((d) == SPI_DataSize_8b) \
+)
+#else
+#  error "No valid chip defined"
+#endif
 
 typedef enum {
   SPI_NSS_soft = 0x0200,

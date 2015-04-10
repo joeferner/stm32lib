@@ -255,4 +255,19 @@ void GPIO_EXTILineConfig(GPIO_Port port, GPIO_Pin pin) {
 #endif
 }
 
+void SWJTAG_setup(SWJTAG_State state) {
+  assert_param(IS_SWJTAG_STATE(state));
 
+#ifdef STM32F0XX
+  assert_param(0);
+#elif defined (STM32F10X)
+  uint32_t tmp;
+
+  tmp = AFIO->MAPR;
+  tmp &= ~SWJTAG_State_mask;
+  tmp |= state;
+  AFIO->MAPR = tmp;
+#else
+#  error "No valid chip defined"
+#endif
+}

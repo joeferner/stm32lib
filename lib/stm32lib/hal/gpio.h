@@ -126,6 +126,27 @@ typedef struct {
   GPIO_PullUpDown pullUpDown;
 } GPIO_InitParams;
 
+#ifdef STM32F0XX
+typedef enum {
+} SWJTAG_State;
+#elif defined (STM32F10X)
+typedef enum {
+  SWJTAG_State_swAndJtag = 0x00000000,
+  SWJTAG_State_swAndJtagNoNJTRST = 0x01000000,
+  SWJTAG_State_sw = 0x02000000,
+  SWJTAG_State_off = 0x04000000
+} SWJTAG_State;
+#define SWJTAG_State_mask 0x07000000
+#define IS_SWJTAG_STATE(v) ( \
+    ((v) == SWJTAG_State_swAndJtag) || \
+    ((v) == SWJTAG_State_swAndJtagNoNJTRST) || \
+    ((v) == SWJTAG_State_sw) || \
+    ((v) == SWJTAG_State_off) \
+  )
+#else
+#  error "No valid chip defined"
+#endif
+
 void GPIO_initParamsInit(GPIO_InitParams *initParams);
 void GPIO_init(GPIO_InitParams *initParams);
 void GPIO_setBits(GPIO_Port port, GPIO_Pin pin);
@@ -134,5 +155,7 @@ void GPIO_writeBits(GPIO_Port port, GPIO_Pin pin, GPIO_BitAction bitAction);
 GPIO_BitAction GPIO_readInputBit(GPIO_Port port, GPIO_Pin pin);
 void GPIO_setAlternateFunction(GPIO_Port port, GPIO_Pin pin, uint8_t af);
 void GPIO_EXTILineConfig(GPIO_Port port, GPIO_Pin pin);
+
+void SWJTAG_setup(SWJTAG_State state);
 
 #endif

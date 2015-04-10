@@ -64,6 +64,7 @@ void HAL_SPI_init(HAL_SPI_InitParams *initParams) {
   // CR2
   tmp = initParams->instance->CR2;
 
+#ifdef STM32F0XX
   tmp &= ~SPI_DataSize_mask;
   tmp |= initParams->dataSize;
 
@@ -72,6 +73,13 @@ void HAL_SPI_init(HAL_SPI_InitParams *initParams) {
   } else {
     tmp &= ~SPI_CR2_FRXTH;
   }
+#elif defined(STM32F10X)
+  if(initParams->dataSize != SPI_DataSize_8b) {
+    assert_param(0);
+  }
+#else
+#  error "No valid chip defined"
+#endif
 
   initParams->instance->CR2 = tmp;
 }

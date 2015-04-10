@@ -39,17 +39,19 @@ void SPI_init(SPI_InitParams *initParams) {
   GPIO_initParamsInit(&gpio);
   gpio.port = initParams->mosiPort;
   gpio.pin = initParams->mosiPin;
-  gpio.mode = GPIO_Mode_alternateFunction;
+  gpio.mode = GPIO_Mode_alternateFunctionOutput;
   gpio.outputType = GPIO_OutputType_pushPull;
   gpio.speed = GPIO_Speed_high;
   GPIO_init(&gpio);
 
   gpio.port = initParams->sckPort;
   gpio.pin = initParams->sckPin;
+  gpio.mode = GPIO_Mode_alternateFunctionOutput;
   GPIO_init(&gpio);
 
   gpio.port = initParams->misoPort;
   gpio.pin = initParams->misoPin;
+  gpio.mode = GPIO_Mode_alternateFunctionInput;
   GPIO_init(&gpio);
 
   HAL_SPI_init(&initParams->halSpiInitParams);
