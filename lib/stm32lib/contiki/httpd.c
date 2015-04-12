@@ -22,18 +22,19 @@ const char mimetype_text_plain[] = "text/plain";
 
 const char http_header_200[] = "HTTP/1.1 200 OK\r\nConnection: close\r\n";
 const char http_200_ok[] = "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Length: 2\r\n\r\nOK";
-const char http_400_fail[] = "HTTP/1.1 200 BAD\r\nConnection: close\r\nContent-Length: 4\r\n\r\nFAIL";
+const char http_400_fail[] = "HTTP/1.1 400 BAD\r\nConnection: close\r\nContent-Length: 4\r\n\r\nFAIL";
+const char http_500_internalServerError[] = "HTTP/1.1 500 BAD\r\nConnection: close\r\nContent-Length: 4\r\n\r\nFAIL";
 const char http_header_101_ws_upgrade[] = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n";
 
 uint16_t http_connections = 0;
 static struct httpd_state conns[HTTPD_CONNS];
 
-void httpd_init();
-void httpd_appcall(process_event_t ev, void *state);
-void httpd_state_init();
-struct httpd_state *httpd_state_alloc();
-void httpd_state_free(struct httpd_state *s);
-void httpd_handle_connection(process_event_t ev, struct httpd_state *s);
+void _httpd_init();
+void _httpd_appcall(process_event_t ev, void *state);
+void _httpd_state_init();
+struct httpd_state *_httpd_state_alloc();
+void _httpd_state_free(struct httpd_state *s);
+void _httpd_handle_connection(process_event_t ev, struct httpd_state *s);
 
 PROCESS(httpd_process, "HTTP server");
 
@@ -43,7 +44,7 @@ PROCESS_THREAD(httpd_process, ev, data) {
 
   PROCESS_BEGIN();
 
-  httpd_init();
+  _httpd_init();
 
   /* Delay 2-4 seconds */
   etimer_set(&et, CLOCK_SECOND * 10);
@@ -54,7 +55,7 @@ PROCESS_THREAD(httpd_process, ev, data) {
   while (1) {
     PROCESS_WAIT_EVENT_UNTIL(ev == tcpip_event || etimer_expired(&et));
     if (ev == tcpip_event) {
-      httpd_appcall(ev, data);
+      _httpd_appcall(ev, data);
     } else if (etimer_expired(&et)) {
       printf("HTTPD States: ");
       for (i = 0; i < HTTPD_CONNS; i++) {
@@ -73,13 +74,13 @@ PROCESS_THREAD(httpd_process, ev, data) {
   PROCESS_END();
 }
 
-void httpd_init() {
+void _httpd_init() {
   printf("?httpd_init\n");
   tcp_listen(UIP_HTONS(80));
-  httpd_state_init();
+  _httpd_state_init();
 }
 
-void httpd_appcall(process_event_t ev, void *state) {
+void _httpd_appcall(process_event_t ev, void *state) {
   struct httpd_state *s = (struct httpd_state *)state;
 
   if (uip_closed() || uip_aborted() || uip_timedout()) {
@@ -90,13 +91,13 @@ void httpd_appcall(process_event_t ev, void *state) {
       }
       printf("\n");
       http_connections--;
-      httpd_state_free(s);
+      _httpd_state_free(s);
     } else {
       printf("HTTPD: closed/aborted ** NO HTTPD_WS_STATE!!! **\n");
     }
   } else if (uip_connected()) {
     if (s == NULL) {
-      s = httpd_state_alloc();
+      s = _httpd_state_alloc();
       if (s == NULL) {
         uip_abort();
         printf("HTTPD: aborting - no resource\n");
@@ -113,19 +114,19 @@ void httpd_appcall(process_event_t ev, void *state) {
     PSOCK_INIT(&s->sock, (uint8_t *)s->buf, sizeof(s->buf) - 1);
     PT_INIT(&s->outputpt);
     timer_set(&s->timer, CLOCK_SECOND * 30);
-    httpd_handle_connection(ev, s);
+    _httpd_handle_connection(ev, s);
   } else if (s != NULL) {
     if (uip_poll()) {
       if (timer_expired(&s->timer)) {
         uip_abort();
         printf("HTTPD: aborting - http timeout\n");
         http_connections--;
-        httpd_state_free(s);
+        _httpd_state_free(s);
       }
     } else {
       timer_restart(&s->timer);
     }
-    httpd_handle_connection(ev, s);
+    _httpd_handle_connection(ev, s);
   } else {
     printf("HTTPD: aborting - no state\n");
     uip_abort();
@@ -250,7 +251,7 @@ PT_THREAD(httpd_handle_output(process_event_t ev, struct httpd_state *s)) {
   PT_END(&s->outputpt);
 }
 
-void httpd_handle_connection(process_event_t ev, struct httpd_state *s) {
+void _httpd_handle_connection(process_event_t ev, struct httpd_state *s) {
   if (s->state == HTTPD_STATE_INPUT) {
     httpd_handle_input(ev, s);
   }
@@ -259,7 +260,7 @@ void httpd_handle_connection(process_event_t ev, struct httpd_state *s) {
   }
 }
 
-void httpd_state_init() {
+void _httpd_state_init() {
   int i;
 
   for (i = 0; i < HTTPD_CONNS; i++) {
@@ -267,19 +268,20 @@ void httpd_state_init() {
   }
 }
 
-struct httpd_state *httpd_state_alloc() {
+struct httpd_state *_httpd_state_alloc() {
   int i;
 
   for (i = 0; i < HTTPD_CONNS; i++) {
     if (conns[i].state == HTTPD_STATE_UNUSED) {
       conns[i].state = HTTPD_STATE_INPUT;
+      conns[i].startTime = time_ms();
       return &conns[i];
     }
   }
   return NULL;
 }
 
-void httpd_state_free(struct httpd_state *s) {
+void _httpd_state_free(struct httpd_state *s) {
   s->state = HTTPD_STATE_UNUSED;
 }
 

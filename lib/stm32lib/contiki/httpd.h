@@ -45,6 +45,7 @@ extern const char mimetype_text_plain[];
 extern const char http_header_200[];
 extern const char http_200_ok[];
 extern const char http_400_fail[];
+extern const char http_500_internalServerError[];
 extern const char http_header_101_ws_upgrade[];
 
 struct httpd_file {
@@ -56,6 +57,7 @@ struct httpd_file {
 extern bool httpd_get_file(const char *filename, struct httpd_file *file);
 
 struct httpd_state {
+  uint32_t startTime;
   struct timer timer;
   struct psock sock;
   struct pt outputpt;
