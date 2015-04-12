@@ -1,5 +1,6 @@
 #include "time.h"
 #include "hal/base.h"
+#include "iwdg.h"
 
 extern uint32_t SystemCoreClock;
 volatile uint32_t _time_counter_ms = 0;
@@ -41,6 +42,8 @@ void time_setup() {
     while (1);
   }
   NVIC_SetPriority(SysTick_IRQn, 0);
+  
+  IWDG_RESET;
 }
 
 volatile uint32_t time_ms() {

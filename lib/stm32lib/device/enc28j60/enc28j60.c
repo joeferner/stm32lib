@@ -3,6 +3,7 @@
 #include "../../rcc.h"
 #include "../../time.h"
 #include "../../utils.h"
+#include "../../iwdg.h"
 #include <net/ip/uip.h>
 #include <net/ipv4/uip_arp.h>
 #include <net/ip/tcpip.h>
@@ -56,15 +57,19 @@ void enc28j60_setup(ENC28J60 *enc28j60) {
 
   // perform system reset
   _enc28j60_resetAssert(enc28j60);
+  IWDG_RESET;
   sleep_ms(50);
   _enc28j60_resetDeassert(enc28j60);
+  IWDG_RESET;
   sleep_ms(1000);
 
   _enc28j60_writeOp(enc28j60, ENC28J60_SOFT_RESET, 0, ENC28J60_SOFT_RESET);
+  IWDG_RESET;
   sleep_ms(50);
 
   // check CLKRDY bit to see if reset is complete
   // The CLKRDY does not work. See Rev. B4 Silicon Errata point. Just wait.
+  IWDG_RESET;
   while (1) {
     uint8_t r = _enc28j60_readReg(enc28j60, ESTAT);
     if (r & ESTAT_CLKRDY) {
@@ -75,6 +80,7 @@ void enc28j60_setup(ENC28J60 *enc28j60) {
 #endif
     sleep_ms(100);
   }
+  IWDG_RESET;
 
   // do bank 0 stuff
   // initialize receive buffer
@@ -97,6 +103,8 @@ void enc28j60_setup(ENC28J60 *enc28j60) {
   // TX end
   //_enc28j60_writeRegPair(enc28j60, ETXNDL, TXSTOP_INIT);
 
+  IWDG_RESET;
+
   // do bank 2 stuff
   // enable MAC receive
   // and bring MAC out of reset (writes 0x00 to MACON2)
@@ -118,6 +126,8 @@ void enc28j60_setup(ENC28J60 *enc28j60) {
   // Do not send packets longer than MAX_FRAMELEN:
   _enc28j60_writeRegPair(enc28j60, MAMXFLL, MAX_FRAMELEN);
 
+  IWDG_RESET;
+
   // do bank 1 stuff, packet filter:
   // For broadcast packets we allow only ARP packtets
   // All other packets should be unicast only for our mac (MAADR)
@@ -133,6 +143,8 @@ void enc28j60_setup(ENC28J60 *enc28j60) {
   _enc28j60_writeRegPair(enc28j60, EPMM0, 0x303f);
   _enc28j60_writeRegPair(enc28j60, EPMCSL, 0xf7f9);
 
+  IWDG_RESET;
+
   // do bank 3 stuff
   // write MAC address
   // NOTE: MAC address in ENC28J60 is byte-backward
@@ -142,6 +154,8 @@ void enc28j60_setup(ENC28J60 *enc28j60) {
   _enc28j60_writeReg(enc28j60, MAADR2, enc28j60->macAddress[3]);
   _enc28j60_writeReg(enc28j60, MAADR1, enc28j60->macAddress[4]);
   _enc28j60_writeReg(enc28j60, MAADR0, enc28j60->macAddress[5]);
+
+  IWDG_RESET;
 
   // no loopback of transmitted frames
   _enc28j60_phyWrite(enc28j60, PHCON2, PHCON2_HDLDIS);
@@ -162,7 +176,10 @@ void enc28j60_setup(ENC28J60 *enc28j60) {
 
   tcpip_set_outputfunc(enc28j60_tcp_output);
 
+  IWDG_RESET;
+
   sleep_ms(100);
+  IWDG_RESET;
 }
 
 void _enc28j60_csDeassert(ENC28J60 *enc28j60) {
