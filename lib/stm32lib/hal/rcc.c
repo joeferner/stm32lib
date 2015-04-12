@@ -61,6 +61,9 @@ void RCC_peripheralClock(RCC_Peripheral set, FunctionalState state) {
   if (set & RCC_Peripheral_USART1) {
     apb2enr |= RCC_APB2ENR_USART1EN;
   }
+  if (set & RCC_Peripheral_USART2) {
+    apb2enr |= RCC_APB2ENR_USART2EN;
+  }
   if (set & RCC_Peripheral_SPI1)   {
     apb2enr |= RCC_APB2ENR_SPI1EN;
   }
@@ -100,6 +103,9 @@ void RCC_peripheralClock(RCC_Peripheral set, FunctionalState state) {
   }
   if (set & RCC_Peripheral_USART1) {
     apb2enr |= RCC_APB2ENR_USART1EN;
+  }
+  if (set & RCC_Peripheral_USART2) {
+    apb1enr |= RCC_APB1ENR_USART2EN;
   }
   if (set & RCC_Peripheral_SPI1)   {
     apb2enr |= RCC_APB2ENR_SPI1EN;

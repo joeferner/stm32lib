@@ -17,6 +17,8 @@ void USART_init(USART_InitParams *initParams) {
   RCC_peripheralClockEnable(RCC_Peripheral_AFIO);
   if (initParams->halUsartInitParams.instance == USART1) {
     RCC_peripheralClockEnable(RCC_Peripheral_USART1);
+  } else if (initParams->halUsartInitParams.instance == USART2) {
+    RCC_peripheralClockEnable(RCC_Peripheral_USART2);
   } else {
     assert_param(0);
   }
@@ -37,6 +39,10 @@ void USART_init(USART_InitParams *initParams) {
       && initParams->txPort == GPIOA && initParams->txPin == GPIO_Pin_9
       && initParams->rxPort == GPIOA && initParams->rxPin == GPIO_Pin_10) {
     GPIO_setAlternateFunction(GPIOA, GPIO_Pin_9 | GPIO_Pin_10, 0);
+  } else if (initParams->halUsartInitParams.instance == USART2
+             && initParams->txPort == GPIOA && initParams->txPin == GPIO_Pin_2
+             && initParams->rxPort == GPIOA && initParams->rxPin == GPIO_Pin_3) {
+    GPIO_setAlternateFunction(GPIOA, GPIO_Pin_2 | GPIO_Pin_3, 0);
   } else {
     assert_param(0);
   }

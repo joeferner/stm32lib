@@ -19,5 +19,6 @@ void strTrim(char* str);
 void strTrimLeft(char* str);
 void strTrimRight(char* str);
 int isWhitespace(char ch);
+char* urlDecode(char* str);
 
 #endif

@@ -157,10 +157,10 @@ GPIO_BitAction GPIO_readInputBit(GPIO_Port port, GPIO_Pin pin) {
 void GPIO_setAlternateFunction(GPIO_Port port, GPIO_Pin pin, uint8_t af) {
   assert_param(af <= 0xf);
 
+  uint32_t tmp;
 #ifdef STM32F0XX
   uint32_t pinPos;
   uint32_t pos;
-  uint32_t tmp;
 
   tmp = port->AFR[0];
   for (pinPos = 0; pinPos < 8; pinPos++) {
@@ -183,7 +183,24 @@ void GPIO_setAlternateFunction(GPIO_Port port, GPIO_Pin pin, uint8_t af) {
   port->AFR[1] = tmp;
 #elif defined (STM32F10X)
   if (af == 0) {
-    return; // Default AF is determined by GPIO Init
+    if (port == GPIOA && pin == (GPIO_Pin_9 | GPIO_Pin_10)) { // USART1 - No Remap
+      tmp = AFIO->MAPR;
+      tmp &= ~AFIO_MAPR_USART1_REMAP;
+      AFIO->MAPR = tmp;
+      return;
+    } else if (port == GPIOA && pin == (GPIO_Pin_2 | GPIO_Pin_3)) { // USART2 - No Remap
+      tmp = AFIO->MAPR;
+      tmp &= ~AFIO_MAPR_USART2_REMAP;
+      AFIO->MAPR = tmp;
+      return;
+    } else if (port == GPIOA && pin == (GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7)) { // SPI1 - No Remap
+      tmp = AFIO->MAPR;
+      tmp &= ~AFIO_MAPR_SPI1_REMAP;
+      AFIO->MAPR = tmp;
+      return;
+    } else if (port == GPIOB && pin == (GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15)) { // SPI2 - No Remap
+      return; // SPI2 doesn't remap
+    }
   }
   assert_param(0);
 #else

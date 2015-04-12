@@ -20,7 +20,7 @@ const char mimetype_text_css[] = "text/css";
 const char mimetype_text_html[] = "text/html";
 const char mimetype_text_plain[] = "text/plain";
 
-const char http_header_200[] = "HTTP/1.1 200 OK\r\nCache-Control: public, max-age=864000\r\nConnection: close\r\n";
+const char http_header_200[] = "HTTP/1.1 200 OK\r\nConnection: close\r\n";
 const char http_200_ok[] = "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Length: 2\r\n\r\nOK";
 const char http_400_fail[] = "HTTP/1.1 200 BAD\r\nConnection: close\r\nContent-Length: 4\r\n\r\nFAIL";
 const char http_header_101_ws_upgrade[] = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n";

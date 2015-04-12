@@ -1,6 +1,7 @@
 
 #include "utils.h"
 #include <string.h>
+#include <stdlib.h>
 
 uint32_t swapEndian(uint32_t val) {
   return ((val << 24) & 0xff000000)
@@ -41,4 +42,26 @@ int isWhitespace(char ch) {
     return 1;
   }
   return 0;
+}
+
+char *urlDecode(char *str) {
+  char tmp[3];
+  char *in = str;
+  char *out = str;
+  while (*in) {
+    if (*in == '+') {
+      in++;
+      *out++ = ' ';
+    } else if (*in == '%') {
+      in++;
+      tmp[0] = *in++;
+      tmp[1] = *in++;
+      tmp[2] = '\0';
+      *out++ = (char)strtol(tmp, NULL, 16);
+    } else {
+      *out++ = *in++;
+    }
+  }
+  *out = '\0';
+  return str;
 }
