@@ -36,6 +36,11 @@ void debug_setup() {
   usart.halUsartInitParams.mode = USART_Mode_rx | USART_Mode_tx;
   USART_init(&usart);
 
+#ifdef DEBUG_ENABLE_READ_IRQ
+  USART_interruptReceive(DEBUG_USART, ENABLE);
+  USART_interruptsEnable(DEBUG_USART);
+#endif
+
   USART_enable(DEBUG_USART);
 
   IWDG_RESET;
@@ -54,18 +59,34 @@ void debug_tx(uint8_t b) {
 #ifdef DEBUG_ENABLE_READ
 
 void debug_tick() {
-  uint8_t b;
   char buffer[DEBUG_READ_INPUT_BUFFER_SIZE];
 
+#ifndef DEBUG_ENABLE_READ_IRQ
+  uint8_t b;
   while (USART_rxHasData(DEBUG_USART)) {
     b = USART_rx(DEBUG_USART);
     RingBufferU8_writeByte(&_debug_inputRingBuffer, b);
-    if (RingBufferU8_readLine(&_debug_inputRingBuffer, buffer, DEBUG_READ_INPUT_BUFFER_SIZE) > 0) {
-      strTrim(buffer);
-      debug_handleCommand(buffer);
-    }
+  }
+#endif
+
+  while (RingBufferU8_readLine(&_debug_inputRingBuffer, buffer, DEBUG_READ_INPUT_BUFFER_SIZE) > 0) {
+    strTrim(buffer);
+    debug_handleCommand(buffer);
     IWDG_RESET;
   }
+  IWDG_RESET;
 }
+
+#ifdef DEBUG_ENABLE_READ_IRQ
+void debug_usartIrq() {
+  uint8_t b;
+  if (USART_getFlagStatus(DEBUG_USART, USART_Flag_RXNE)) {
+    USART_clearFlag(DEBUG_USART, USART_Flag_RXNE);
+    b = USART_rx(DEBUG_USART);
+    RingBufferU8_writeByte(&_debug_inputRingBuffer, b);
+  }
+}
+#endif
+
 #endif
 

@@ -252,15 +252,14 @@ void USART_interruptsEnable(USART_Instance instance) {
   uint32_t imr;
   assert_param(IS_USART(instance));
 
+  irq = USART_getIrqForPort(instance);
+
 #ifdef STM32F0XX
   if (instance == USART1) {
-    irq = USART1_IRQn;
     imr = EXTI_IMR_MR27;
   } else if (instance == USART2) {
-    irq = USART2_IRQn;
     imr = EXTI_IMR_MR28;
   } else if (instance == USART3 || instance == USART4) {
-    irq = USART3_4_IRQn;
     imr = EXTI_IMR_MR29;
   } else {
     assert_param(0);
@@ -268,16 +267,6 @@ void USART_interruptsEnable(USART_Instance instance) {
   }
 #elif defined (STM32F10X)
   imr = 0;
-  if (instance == USART1) {
-    irq = USART1_IRQn;
-  } else if (instance == USART2) {
-    irq = USART2_IRQn;
-  } else if (instance == USART3) {
-    irq = USART3_IRQn;
-  } else {
-    assert_param(0);
-    return;
-  }
 #else
 #  error "No valid chip defined"
 #endif
@@ -289,6 +278,34 @@ void USART_interruptsEnable(USART_Instance instance) {
   }
 
   NVIC_EnableIRQ(irq);
+}
+
+IRQn_Type USART_getIrqForPort(USART_Instance instance) {
+#ifdef STM32F0XX
+  if (instance == USART1) {
+    return USART1_IRQn;
+  } else if (instance == USART2) {
+    return USART2_IRQn;
+  } else if (instance == USART3 || instance == USART4) {
+    return USART3_4_IRQn;
+  } else {
+    assert_param(0);
+    return;
+  }
+#elif defined (STM32F10X)
+  if (instance == USART1) {
+    return USART1_IRQn;
+  } else if (instance == USART2) {
+    return USART2_IRQn;
+  } else if (instance == USART3) {
+    return USART3_IRQn;
+  } else {
+    assert_param(0);
+    return -1;
+  }
+#else
+#  error "No valid chip defined"
+#endif
 }
 
 void USART_interruptTransmissionComplete(USART_Instance instance, FunctionalState state) {

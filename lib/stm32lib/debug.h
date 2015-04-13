@@ -11,7 +11,12 @@ void debug_tx(uint8_t b);
 
 #ifdef DEBUG_ENABLE_READ
 void debug_tick();
-extern void debug_handleCommand(const char* str);
+extern void debug_handleCommand(const char *str);
+
+#ifdef DEBUG_ENABLE_READ_IRQ
+void debug_usartIrq();
+#endif
+
 #endif
 
 #endif

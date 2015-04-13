@@ -187,5 +187,6 @@ void USART_clearFlag(USART_Instance instance, USART_Flag flag);
 void USART_interruptTransmissionComplete(USART_Instance instance, FunctionalState state);
 void USART_interruptReceive(USART_Instance instance, FunctionalState state);
 void USART_interruptsEnable(USART_Instance instance);
+IRQn_Type USART_getIrqForPort(USART_Instance instance);
 
 #endif
