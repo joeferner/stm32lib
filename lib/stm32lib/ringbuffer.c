@@ -19,6 +19,12 @@ uint16_t RingBufferU8_free(RingBufferU8 *ring) {
   return ring->size - ring->available;
 }
 
+void RingBufferU8_clear(RingBufferU8 *ring) {
+  ring->read = ring->storage;
+  ring->write = ring->storage;
+  ring->available = 0;
+}
+
 uint8_t RingBufferU8_readByte(RingBufferU8 *ring) {
   if (ring->available == 0) {
     return 0;

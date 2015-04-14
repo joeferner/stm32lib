@@ -241,7 +241,7 @@ void USART_clearFlag(USART_Instance instance, USART_Flag flag) {
 #ifdef STM32F0XX
   instance->ICR = (uint32_t)flag;
 #elif defined (STM32F10X)
-  instance->SR = (uint32_t)flag;
+  instance->SR &= ~((uint32_t)flag);
 #else
 #  error "No valid chip defined"
 #endif
