@@ -21,6 +21,7 @@ void RingBufferU8_read(RingBufferU8 *ring, uint8_t *buffer, uint16_t size);
 uint8_t RingBufferU8_readByte(RingBufferU8 *ring);
 void RingBufferU8_write(RingBufferU8 *ring, const uint8_t *buffer, uint16_t size);
 void RingBufferU8_writeByte(RingBufferU8 *ring, uint8_t b);
+uint16_t RingBufferU8_readUntil(RingBufferU8 *ring, char *buffer, uint16_t size, uint8_t stopByte);
 uint16_t RingBufferU8_readLine(RingBufferU8 *ring, char *buffer, uint16_t size);
 uint8_t RingBufferU8_peek(RingBufferU8 *ring);
 uint8_t RingBufferU8_peekn(RingBufferU8 *ring, uint16_t i);

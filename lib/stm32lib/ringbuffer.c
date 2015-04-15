@@ -69,11 +69,15 @@ void RingBufferU8_write(RingBufferU8 *ring, const uint8_t *buffer, uint16_t size
 }
 
 uint16_t RingBufferU8_readLine(RingBufferU8 *ring, char *buffer, uint16_t size) {
+  return RingBufferU8_readUntil(ring, buffer, size, '\n');
+}
+
+uint16_t RingBufferU8_readUntil(RingBufferU8 *ring, char *buffer, uint16_t size, uint8_t stopByte) {
   uint8_t b;
   uint16_t i;
   for (i = 0; i < min(ring->available, size - 1); i++) {
     b = RingBufferU8_peekn(ring, i);
-    if (b == '\n') {
+    if (b == stopByte) {
       i++;
       RingBufferU8_read(ring, (uint8_t *) buffer, i);
       buffer[i] = '\0';
