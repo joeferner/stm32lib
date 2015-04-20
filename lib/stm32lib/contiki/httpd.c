@@ -26,7 +26,7 @@ const char http_400_fail[] = "HTTP/1.1 400 BAD\r\nConnection: close\r\nContent-L
 const char http_500_internalServerError[] = "HTTP/1.1 500 BAD\r\nConnection: close\r\nContent-Length: 4\r\n\r\nFAIL";
 const char http_header_101_ws_upgrade[] = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n";
 
-uint16_t http_connections = 0;
+uint16_t _httpd_connections = 0;
 static struct httpd_state conns[HTTPD_CONNS];
 
 void _httpd_init();
@@ -61,9 +61,8 @@ PROCESS_THREAD(httpd_process, ev, data) {
       for (i = 0; i < HTTPD_CONNS; i++) {
         printf("%04x ", conns[i].state);
         if (conns[i].state != HTTPD_STATE_UNUSED && timer_expired(&conns[i].timer)) {
-          conns[i].state = HTTPD_STATE_UNUSED;
           printf("*** RELEASED HTTPD Session");
-          http_connections--;
+	  _httpd_state_free(&conns[i]);
         }
       }
       printf("\n");
@@ -90,7 +89,6 @@ void _httpd_appcall(process_event_t ev, void *state) {
         printf("%s", s->file.fileName);
       }
       printf("\n");
-      http_connections--;
       _httpd_state_free(s);
     } else {
       printf("HTTPD: closed/aborted ** NO HTTPD_WS_STATE!!! **\n");
@@ -103,8 +101,6 @@ void _httpd_appcall(process_event_t ev, void *state) {
         printf("HTTPD: aborting - no resource\n");
         return;
       }
-      http_connections++;
-
       tcp_markconn(uip_conn, s);
       s->state = HTTPD_STATE_INPUT;
     } else {
@@ -120,7 +116,6 @@ void _httpd_appcall(process_event_t ev, void *state) {
       if (timer_expired(&s->timer)) {
         uip_abort();
         printf("HTTPD: aborting - http timeout\n");
-        http_connections--;
         _httpd_state_free(s);
       }
     } else {
@@ -275,6 +270,8 @@ struct httpd_state *_httpd_state_alloc() {
     if (conns[i].state == HTTPD_STATE_UNUSED) {
       conns[i].state = HTTPD_STATE_INPUT;
       conns[i].startTime = time_ms();
+      _httpd_connections++;
+      printf("httpd: after alloc: using %d of %d connections\n", _httpd_connections, HTTPD_CONNS);
       return &conns[i];
     }
   }
@@ -283,5 +280,7 @@ struct httpd_state *_httpd_state_alloc() {
 
 void _httpd_state_free(struct httpd_state *s) {
   s->state = HTTPD_STATE_UNUSED;
+  _httpd_connections--;
+  printf("httpd: after free: using %d of %d connections\n", _httpd_connections, HTTPD_CONNS);
 }
 
