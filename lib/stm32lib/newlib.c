@@ -71,11 +71,8 @@ int _read(int file, char* ptr, int len) {
 }
 
 int _write(int file, char* ptr, int len) {
-  int n;
   if (file == STDOUT_FILENO || file == STDERR_FILENO) {
-    for (n = 0; n < len; n++) {
-      debug_tx(*ptr++);
-    }
+    debug_tx(ptr, len);
   }
 
 #ifdef SDCARD_ENABLE

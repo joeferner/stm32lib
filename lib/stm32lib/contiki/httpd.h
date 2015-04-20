@@ -1,6 +1,6 @@
 
-#ifndef _HTTPD_H_
-#define _HTTPD_H_
+#ifndef _STM32LIB_CONTIKI_HTTPD_H_
+#define _STM32LIB_CONTIKI_HTTPD_H_
 
 #include <net/ip/psock.h>
 

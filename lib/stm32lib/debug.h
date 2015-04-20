@@ -5,9 +5,16 @@
 #include <stdint.h>
 #include "platform_config.h"
 
+#if defined(DEBUG_NETWORK_IP) && defined(DEBUG_NETWORK_PORT)
+#  define DEBUG_NETWORK_ENABLE
+#endif
+
 void debug_setup();
+#ifdef DEBUG_NETWORK_ENABLE
+void debug_networkSetup();
+#endif
 uint8_t debug_rx();
-void debug_tx(uint8_t b);
+void debug_tx(char* ptr, int len);
 
 #ifdef DEBUG_ENABLE_READ
 void debug_tick();

@@ -9,6 +9,13 @@
 #  define DEBUG_READ_INPUT_BUFFER_SIZE 100
 #endif
 
+#ifdef DEBUG_NETWORK_ENABLE
+#include <net/ip/uip-udp-packet.h>
+#include <net/ip/uiplib.h>
+uip_ipaddr_t _debug_ipaddr;
+static struct uip_udp_conn *_debug_udpconn = NULL;
+#endif
+
 #ifdef DEBUG_ENABLE_READ
 #include "ringbuffer.h"
 RingBufferU8 _debug_inputRingBuffer;
@@ -46,14 +53,31 @@ void debug_setup() {
   IWDG_RESET;
 }
 
+#ifdef DEBUG_NETWORK_ENABLE
+void debug_networkSetup() {
+  uiplib_ipaddrconv(DEBUG_NETWORK_IP, &_debug_ipaddr);
+  _debug_udpconn = udp_new(&_debug_ipaddr, UIP_HTONS(DEBUG_NETWORK_PORT), NULL);
+}
+#endif
+
 uint8_t debug_rx() {
   while (!USART_rxHasData(DEBUG_USART));
   return USART_rx(DEBUG_USART);
 }
 
-void debug_tx(uint8_t b) {
-  USART_txWaitForComplete(DEBUG_USART);
-  USART_tx(DEBUG_USART, b);
+void debug_tx(char* ptr, int len) {
+  int n;
+  char *p;
+  for (n = 0, p = ptr; n < len; n++) {
+    USART_txWaitForComplete(DEBUG_USART);
+    USART_tx(DEBUG_USART, *p++);
+  }
+  
+#ifdef DEBUG_NETWORK_ENABLE
+  if(_debug_udpconn){
+    uip_udp_packet_sendto(_debug_udpconn, ptr, len, &_debug_ipaddr, UIP_HTONS(DEBUG_NETWORK_PORT));
+  }
+#endif
 }
 
 #ifdef DEBUG_ENABLE_READ
