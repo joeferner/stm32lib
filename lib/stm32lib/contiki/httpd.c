@@ -65,7 +65,7 @@ PROCESS_THREAD(httpd_process, ev, data) {
 	  _httpd_state_free(&conns[i]);
         }
       }
-      printf("\n");
+      printf(" %d/%d\n", _httpd_connections, HTTPD_CONNS);
       etimer_reset(&et);
     }
   }
@@ -271,7 +271,6 @@ struct httpd_state *_httpd_state_alloc() {
       conns[i].state = HTTPD_STATE_INPUT;
       conns[i].startTime = time_ms();
       _httpd_connections++;
-      printf("httpd: after alloc: using %d of %d connections\n", _httpd_connections, HTTPD_CONNS);
       return &conns[i];
     }
   }
@@ -281,6 +280,5 @@ struct httpd_state *_httpd_state_alloc() {
 void _httpd_state_free(struct httpd_state *s) {
   s->state = HTTPD_STATE_UNUSED;
   _httpd_connections--;
-  printf("httpd: after free: using %d of %d connections\n", _httpd_connections, HTTPD_CONNS);
 }
 
