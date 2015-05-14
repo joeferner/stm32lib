@@ -19,6 +19,7 @@ typedef enum {
 
 void NVIC_priorityGroupConfig(NVIC_PriorityGroup priorityGroup);
 void NVIC_enable(IRQn_Type irq, uint8_t preemptionPriority, uint8_t subPriority);
+void NVIC_systemReset();
 
 #endif
 

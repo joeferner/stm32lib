@@ -3,6 +3,8 @@
 #include "nvic.h"
 
 #define AIRCR_VECTKEY_MASK    ((uint32_t)0x05FA0000)
+#define NVIC_AIRCR_VECTKEY    (0x5FA << 16)   /*!< AIRCR Key for write access   */
+#define NVIC_SYSRESETREQ      2               /*!< System Reset Request         */
 
 void NVIC_priorityGroupConfig(NVIC_PriorityGroup priorityGroup) {
   assert_param(IS_NVIC_PRIORITY_GROUP(priorityGroup));
@@ -25,4 +27,10 @@ void NVIC_enable(IRQn_Type irq, uint8_t preemptionPriority, uint8_t subPriority)
 
   // Enable the Selected IRQ Channels
   NVIC->ISER[irq >> 0x05] = (uint32_t)0x01 << (irq & (uint8_t)0x1F);
+}
+
+void NVIC_systemReset() {
+  SCB->AIRCR  = (NVIC_AIRCR_VECTKEY | (SCB->AIRCR & (0x700)) | (1 << NVIC_SYSRESETREQ));
+  __DSB(); 
+  while(1);  
 }
