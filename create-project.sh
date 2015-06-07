@@ -28,7 +28,15 @@ STM32F103RBT6)
   STM32_RAM_SIZE=$(echo "20 * 1024" | bc)
   SYSTEM_FILE_NAME=system_stm32f10x.c
   STARTUP_FILE_NAME=startup_stm32f10x_md.s
-  LINKER_FILE_NAME=stm32f10x_md_flash.ld
+  LINKER_FILE_NAME=stm32f10x_md_flash-128k-20k.ld
+  ;;
+STM32F103RET6)
+  STM32_CHIP_DEF=STM32F10X_MD
+  STM32_FLASH_SIZE=$(echo "512 * 1024" | bc)
+  STM32_RAM_SIZE=$(echo "64 * 1024" | bc)
+  SYSTEM_FILE_NAME=system_stm32f10x.c
+  STARTUP_FILE_NAME=startup_stm32f10x_md.s
+  LINKER_FILE_NAME=stm32f10x_md_flash-512k-64k.ld
   ;;
 *)
   die "invalid chip"
