@@ -20,5 +20,6 @@ void strTrimLeft(char* str);
 void strTrimRight(char* str);
 int isWhitespace(char ch);
 char* urlDecode(char* str);
+void printMemory(uint8_t* buffer, uint32_t length);
 
 #endif

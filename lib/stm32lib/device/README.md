@@ -1,0 +1,6 @@
+- cc3000     - Wifi Texas Instruments
+- enc28j60   - RJ45 Networking
+- mcp3204    - 12-bit Analog-to-Digital Converter (ADC)
+- nRF8001    - Bluetooth
+- sdcard     - SDCard
+- sst26vf0xx - Microchip Flash

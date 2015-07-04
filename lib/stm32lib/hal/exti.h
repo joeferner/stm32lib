@@ -93,6 +93,7 @@ typedef struct {
 
 void EXTI_initParamsInit(EXTI_InitParams *initParams);
 void EXTI_enable(EXTI_InitParams *initParams);
+void EXTI_disable(EXTI_InitParams *initParams);
 FlagStatus EXTI_getStatus(EXTI_Line line);
 void EXTI_clearPendingBit(EXTI_Line line);
 

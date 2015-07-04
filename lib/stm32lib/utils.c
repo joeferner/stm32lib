@@ -65,3 +65,31 @@ char *urlDecode(char *str) {
   *out = '\0';
   return str;
 }
+
+void printMemory(uint8_t* buffer, uint32_t length) {
+  uint8_t col;
+  for(uint32_t offset = 0; offset < length; offset += 16) {
+    printf("%08X ", offset);
+    for(col = 0; col < 16; col++) {
+      if(offset + col < length) {
+	printf("%02X ", buffer[offset + col]);
+      } else {
+	printf("   ");
+      }
+    }
+    for(col = 0; col < 16; col++) {
+      if(offset + col < length) {
+	char ch = buffer[offset + col];
+	if(ch >= '.' && ch <= '~') {
+	  printf("%c", ch);
+	} else {
+	  printf(".");
+	}
+      } else {
+	printf(" ");
+      }
+    }
+    printf("\n");
+  }
+}
+
