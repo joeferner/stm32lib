@@ -2,6 +2,7 @@
 #include "utils.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 uint32_t swapEndian(uint32_t val) {
   return ((val << 24) & 0xff000000)
@@ -69,7 +70,7 @@ char *urlDecode(char *str) {
 void printMemory(uint8_t* buffer, uint32_t length) {
   uint8_t col;
   for(uint32_t offset = 0; offset < length; offset += 16) {
-    printf("%08X ", offset);
+    printf("%08lX ", offset);
     for(col = 0; col < 16; col++) {
       if(offset + col < length) {
 	printf("%02X ", buffer[offset + col]);

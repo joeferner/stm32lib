@@ -61,6 +61,7 @@ uint8_t SPI_transfer(SPI_Instance instance, uint8_t d) {
   while (SPI_getFlagStatus(instance, SPI_Flag_RXNE) == SET) {
     SPI_receiveData16(instance);
   }
+  // If you are stuck here did you forget to call SPI_enable
   while (SPI_getFlagStatus(instance, SPI_Flag_TXE) == RESET);
   SPI_sendData8(instance, d);
   while (SPI_getFlagStatus(instance, SPI_Flag_RXNE) == RESET);
