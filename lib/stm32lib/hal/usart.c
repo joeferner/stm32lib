@@ -290,7 +290,7 @@ IRQn_Type USART_getIrqForPort(USART_Instance instance) {
     return USART3_4_IRQn;
   } else {
     assert_param(0);
-    return;
+    return -1;
   }
 #elif defined (STM32F10X)
   if (instance == USART1) {

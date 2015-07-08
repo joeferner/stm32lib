@@ -128,7 +128,11 @@ typedef struct {
 
 #ifdef STM32F0XX
 typedef enum {
+  SWJTAG_State_swAndJtag = 0x00000000
 } SWJTAG_State;
+#define IS_SWJTAG_STATE(v) ( \
+    ((v) == SWJTAG_State_swAndJtag) \
+  )
 #elif defined (STM32F10X)
 typedef enum {
   SWJTAG_State_swAndJtag = 0x00000000,
