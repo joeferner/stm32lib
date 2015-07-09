@@ -13,6 +13,8 @@ typedef struct {
   GPIO_Pin misoPin;
   GPIO_Port sckPort;
   GPIO_Pin sckPin;
+  GPIO_Port csPort;
+  GPIO_Pin csPin;
 } SPI_InitParams;
 
 void SPI_initParamsInit(SPI_InitParams *initParams);

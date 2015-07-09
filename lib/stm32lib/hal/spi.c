@@ -133,5 +133,8 @@ FlagStatus SPI_getFlagStatus(SPI_Instance instance, SPI_Flag flag) {
   }
 }
 
+void SPI_interruptRxBufferNotEmptyEnable(SPI_Instance instance) {
+  instance->CR2 |= SPI_CR2_RXNEIE;
+}
 
 

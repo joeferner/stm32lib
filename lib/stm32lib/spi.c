@@ -10,6 +10,8 @@ void SPI_initParamsInit(SPI_InitParams *initParams) {
   initParams->misoPin = -1;
   initParams->sckPort = NULL;
   initParams->sckPin = -1;
+  initParams->csPort = NULL;
+  initParams->csPin = -1;
 }
 
 void SPI_init(SPI_InitParams *initParams) {
@@ -18,6 +20,9 @@ void SPI_init(SPI_InitParams *initParams) {
   RCC_peripheralClockEnableForPort(initParams->mosiPort);
   RCC_peripheralClockEnableForPort(initParams->misoPort);
   RCC_peripheralClockEnableForPort(initParams->sckPort);
+  if(initParams->csPort != NULL && initParams->csPin != -1) {
+    RCC_peripheralClockEnableForPort(initParams->csPort);
+  }
 
   // GPIO AFIO
   if (initParams->halSpiInitParams.instance == SPI1
@@ -53,6 +58,19 @@ void SPI_init(SPI_InitParams *initParams) {
   gpio.pin = initParams->misoPin;
   gpio.mode = GPIO_Mode_alternateFunctionInput;
   GPIO_init(&gpio);
+
+  if(initParams->csPort != NULL && initParams->csPin != -1) {
+    gpio.port = initParams->csPort;
+    gpio.pin = initParams->csPin;
+    if(initParams->halSpiInitParams.mode == SPI_Mode_slave) {
+      gpio.mode = GPIO_Mode_alternateFunctionInput;
+    } else if(initParams->halSpiInitParams.mode == SPI_Mode_master) {
+      gpio.mode = GPIO_Mode_alternateFunctionOutput;
+    } else {
+      assert_param(0);
+    }
+    GPIO_init(&gpio);
+  }
 
   HAL_SPI_init(&initParams->halSpiInitParams);
 }

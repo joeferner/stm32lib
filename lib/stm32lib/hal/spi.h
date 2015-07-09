@@ -190,6 +190,7 @@ uint8_t SPI_receiveData8(SPI_Instance instance);
 void SPI_sendData16(SPI_Instance instance, uint16_t d);
 uint16_t SPI_receiveData16(SPI_Instance instance);
 FlagStatus SPI_getFlagStatus(SPI_Instance instance, SPI_Flag flag);
+void SPI_interruptRxBufferNotEmptyEnable(SPI_Instance instance);
 
 #endif
 
