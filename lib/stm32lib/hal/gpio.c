@@ -200,6 +200,8 @@ void GPIO_setAlternateFunction(GPIO_Port port, GPIO_Pin pin, uint8_t af) {
       return;
     } else if (port == GPIOB && pin == (GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15)) { // SPI2 - No Remap
       return; // SPI2 doesn't remap
+    } else if (port == GPIOB && pin == (GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5)) { // SPI3 - No Remap
+      return; // SPI3 doesn't remap
     }
   }
   assert_param(0);

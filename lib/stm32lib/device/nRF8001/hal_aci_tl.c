@@ -381,6 +381,9 @@ void hal_aci_tl_init(aci_pins_t *a_pins, bool debug)
   gpio.mode = GPIO_Mode_input;
   GPIO_init(&gpio);
 
+  GPIO_setBits(a_pins->csPort, a_pins->csPin);
+  SPI_enable(a_pins->spi);
+
   /* Pin reset the nRF8001, required when the nRF8001 setup is being changed */
   hal_aci_tl_pin_reset();
 

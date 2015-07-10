@@ -31,7 +31,13 @@ void HAL_SPI_init(HAL_SPI_InitParams *initParams) {
     RCC_peripheralClockEnable(RCC_Peripheral_SPI1);
   } else if (initParams->instance == SPI2) {
     RCC_peripheralClockEnable(RCC_Peripheral_SPI2);
-  } else {
+  }
+#ifdef SPI3
+  else if (initParams->instance == SPI3) {
+    RCC_peripheralClockEnable(RCC_Peripheral_SPI3);
+  }
+#endif
+  else {
     assert_param(0);
   }
 

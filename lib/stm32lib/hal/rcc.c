@@ -70,6 +70,11 @@ void RCC_peripheralClock(RCC_Peripheral set, FunctionalState state) {
   if (set & RCC_Peripheral_SPI2)   {
     apb1enr |= RCC_APB1ENR_SPI2EN;
   }
+#ifdef RCC_APB1ENR_SPI3EN
+  if (set & RCC_Peripheral_SPI3)   {
+    apb1enr |= RCC_APB1ENR_SPI3EN;
+  }
+#endif
 #elif defined(STM32F10X)
   if (set & RCC_Peripheral_ADC1)   {
     apb2enr |= RCC_APB2ENR_ADC1EN;

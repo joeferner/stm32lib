@@ -18,24 +18,12 @@ typedef enum  {
   RCC_Peripheral_USART2 = 0x0000400,
   RCC_Peripheral_SPI1   = 0x0000800,
   RCC_Peripheral_SPI2   = 0x0001000,
-  RCC_Peripheral_ADC1   = 0x0002000
+#ifdef SPI3
+  RCC_Peripheral_SPI3   = 0x0002000,
+#endif
+  RCC_Peripheral_ADC1   = 0x0004000
 } RCC_Peripheral;
-#define IS_RCC_PERIPHERAL(v) ( \
-  ((v) == RCC_Peripheral_AFIO) \
-  || ((v) == RCC_Peripheral_SYSCFG) \
-  || ((v) == RCC_Peripheral_GPIOA) \
-  || ((v) == RCC_Peripheral_GPIOB) \
-  || ((v) == RCC_Peripheral_GPIOC) \
-  || ((v) == RCC_Peripheral_GPIOD) \
-  || ((v) == RCC_Peripheral_GPIOE) \
-  || ((v) == RCC_Peripheral_GPIOF) \
-  || ((v) == RCC_Peripheral_DAC) \
-  || ((v) == RCC_Peripheral_USART1) \
-  || ((v) == RCC_Peripheral_USART2) \
-  || ((v) == RCC_Peripheral_SPI1) \
-  || ((v) == RCC_Peripheral_SPI2) \
-  || ((v) == RCC_Peripheral_ADC1) \
-)
+#define IS_RCC_PERIPHERAL(v) (((v) & 0x7fff) != 0)
 
 typedef struct {
   uint32_t SYSCLK_Frequency;

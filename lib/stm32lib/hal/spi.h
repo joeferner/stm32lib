@@ -6,10 +6,11 @@
 
 typedef SPI_TypeDef *SPI_Instance;
 
-#define IS_SPI_INSTANCE(s) ( \
-  ((s) == SPI1) \
-  || ((s) == SPI2) \
-)
+#ifdef SPI3
+#  define IS_SPI_INSTANCE(s) ( ((s) == SPI1) || ((s) == SPI2) || ((s) == SPI3) )
+#else
+#  define IS_SPI_INSTANCE(s) ( ((s) == SPI1) || ((s) == SPI2) )
+#endif
 
 typedef enum {
   SPI_Direction_2LinesFullDuplex = 0x0000,

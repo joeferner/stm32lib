@@ -37,7 +37,17 @@ void SPI_init(SPI_InitParams *initParams) {
       && initParams->sckPort == GPIOB && initParams->sckPin == GPIO_Pin_13) {
     RCC_peripheralClockEnableForPort(GPIOB);
     GPIO_setAlternateFunction(GPIOB, GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15, 0);
-  } else {
+  }
+#ifdef SPI3
+  else if (initParams->halSpiInitParams.instance == SPI3
+      && initParams->mosiPort == GPIOB && initParams->mosiPin == GPIO_Pin_5
+      && initParams->misoPort == GPIOB && initParams->misoPin == GPIO_Pin_4
+      && initParams->sckPort == GPIOB && initParams->sckPin == GPIO_Pin_3) {
+    RCC_peripheralClockEnableForPort(GPIOB);
+    GPIO_setAlternateFunction(GPIOB, GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5, 0);
+  }
+#endif
+  else {
     assert_param(0);
   }
 
