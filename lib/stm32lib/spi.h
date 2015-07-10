@@ -20,5 +20,7 @@ typedef struct {
 void SPI_initParamsInit(SPI_InitParams *initParams);
 void SPI_init(SPI_InitParams *initParams);
 uint8_t SPI_transfer(SPI_Instance instance, uint8_t d);
+void SPI_waitForTxEmpty(SPI_Instance instance);
+void SPI_waitForRxNotEmpty(SPI_Instance instance);
 
 #endif

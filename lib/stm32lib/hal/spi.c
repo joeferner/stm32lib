@@ -137,4 +137,12 @@ void SPI_interruptRxBufferNotEmptyEnable(SPI_Instance instance) {
   instance->CR2 |= SPI_CR2_RXNEIE;
 }
 
+#ifdef STM32F0XX
+uint8_t SPI_txFifoLevel(SPI_Instance instance) {
+  return instance->SR >> 11;
+}
 
+uint8_t SPI_rxFifoLevel(SPI_Instance instance) {
+  return instance->SR >> 9;
+}
+#endif

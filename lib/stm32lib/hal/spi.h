@@ -191,6 +191,10 @@ void SPI_sendData16(SPI_Instance instance, uint16_t d);
 uint16_t SPI_receiveData16(SPI_Instance instance);
 FlagStatus SPI_getFlagStatus(SPI_Instance instance, SPI_Flag flag);
 void SPI_interruptRxBufferNotEmptyEnable(SPI_Instance instance);
+#ifdef STM32F0XX
+uint8_t SPI_txFifoLevel(SPI_Instance instance);
+uint8_t SPI_rxFifoLevel(SPI_Instance instance);
+#endif
 
 #endif
 

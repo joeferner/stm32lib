@@ -79,11 +79,19 @@ uint8_t SPI_transfer(SPI_Instance instance, uint8_t d) {
   while (SPI_getFlagStatus(instance, SPI_Flag_RXNE) == SET) {
     SPI_receiveData16(instance);
   }
+  SPI_waitForTxEmpty(instance);
+  SPI_sendData8(instance, d);
+  SPI_waitForRxNotEmpty(instance);
+  return SPI_receiveData8(instance);
+}
+
+void SPI_waitForTxEmpty(SPI_Instance instance) {
   // If you are stuck here did you forget to call SPI_enable
   while (SPI_getFlagStatus(instance, SPI_Flag_TXE) == RESET);
-  SPI_sendData8(instance, d);
+}
+
+void SPI_waitForRxNotEmpty(SPI_Instance instance) {
   while (SPI_getFlagStatus(instance, SPI_Flag_RXNE) == RESET);
-  return SPI_receiveData8(instance);
 }
 
 
