@@ -44,10 +44,12 @@
 #define PIPES_ARRAY_SIZE                ((ACI_DEVICE_MAX_PIPES + 7)/8)
 
 /* Same size as a hal_aci_data_t */
+#pragma pack(push,1)
 typedef struct {
   uint8_t   debug_byte;
   aci_evt_t evt;
 } _aci_packed_ hal_aci_evt_t;
+#pragma pack(pop)
 
 ACI_ASSERT_SIZE(hal_aci_evt_t, 34);
 

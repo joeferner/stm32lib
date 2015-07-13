@@ -121,7 +121,9 @@ bool aci_queue_is_empty(aci_queue_t *aci_q)
 
   //Critical section
   __disable_irq();
-  if (aci_q->head == aci_q->tail)
+  uint8_t head = aci_q->head;
+  uint8_t tail = aci_q->tail;
+  if (head == tail)
   {
     state = true;
   }
@@ -139,14 +141,18 @@ bool aci_queue_is_empty_from_isr(aci_queue_t *aci_q)
 
 bool aci_queue_is_full(aci_queue_t *aci_q)
 {
-  bool state;
+  bool state = false;
 
   ble_assert(NULL != aci_q);
 
   //This should be done in a critical section
   __disable_irq();
   
-  state = (aci_q->tail == aci_q->head + ACI_QUEUE_SIZE);
+  uint8_t tail = aci_q->tail;
+  uint8_t head = aci_q->head;
+  if(tail == (head + ACI_QUEUE_SIZE)) {
+    state = true;
+  }
 
   __enable_irq();
   //end
@@ -158,7 +164,7 @@ bool aci_queue_is_full_from_isr(aci_queue_t *aci_q)
 {
   ble_assert(NULL != aci_q);
 
-  return (aci_q->tail == aci_q->head + ACI_QUEUE_SIZE);
+  return (aci_q->tail == (aci_q->head + ACI_QUEUE_SIZE));
 }
 
 bool aci_queue_peek(aci_queue_t *aci_q, hal_aci_data_t *p_data)

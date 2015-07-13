@@ -32,6 +32,8 @@
 
 #include "aci.h"
 
+#pragma pack(push,1)
+
 /**
  * @enum aci_evt_opcode_t
  * @brief ACI event opcodes
@@ -393,5 +395,7 @@ typedef struct
 } _aci_packed_ aci_evt_t;
 
 ACI_ASSERT_SIZE(aci_evt_t, 33);
+
+#pragma pack(pop)
 
 #endif // ACI_EVTS_H__

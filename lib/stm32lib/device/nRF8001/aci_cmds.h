@@ -34,6 +34,8 @@
 
 #include "aci.h"
 
+#pragma pack(push,1)
+
 /**
  * @enum aci_cmd_opcode_t
  * @brief ACI command opcodes
@@ -429,6 +431,8 @@ typedef struct
 
   } params;
 } _aci_packed_ aci_cmd_t;
+
+#pragma pack(pop)
 
 #endif // ACI_CMDS_H__
 

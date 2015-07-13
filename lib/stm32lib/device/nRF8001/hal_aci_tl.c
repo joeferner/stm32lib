@@ -70,7 +70,10 @@ void m_aci_data_print(hal_aci_data_t *p_data)
   printf("%" PRIu8 " :", length);
   for (i=0; i<=length; i++)
   {
-    printf("%02x, ", p_data->buffer[i]);
+    if(i>0) {
+      printf(", ");
+    }
+    printf("%02x", p_data->buffer[i]);
   }
   printf("\n");
 }
@@ -291,7 +294,9 @@ bool hal_aci_tl_event_get(hal_aci_data_t *p_aci_data)
 {
   bool was_full;
 
-  if (!a_pins_local_ptr->interface_is_interrupt && !aci_queue_is_full(&aci_rx_q))
+  bool interface_is_interrupt = a_pins_local_ptr->interface_is_interrupt;
+  bool queueIsFull = aci_queue_is_full(&aci_rx_q);
+  if (!interface_is_interrupt && !queueIsFull)
   {
     m_aci_event_check();
   }
@@ -382,16 +387,13 @@ void hal_aci_tl_init(aci_pins_t *a_pins, bool debug)
   GPIO_init(&gpio);
 
   GPIO_setBits(a_pins->csPort, a_pins->csPin);
+  GPIO_resetBits(a_pins->misoPort, a_pins->misoPin);
+  GPIO_resetBits(a_pins->mosiPort, a_pins->mosiPin);
+  GPIO_resetBits(a_pins->sckPort, a_pins->sckPin);
   SPI_enable(a_pins->spi);
 
   /* Pin reset the nRF8001, required when the nRF8001 setup is being changed */
   hal_aci_tl_pin_reset();
-
-  /* Set the nRF8001 to a known state as required by the datasheet*/
-  GPIO_resetBits(a_pins->misoPort, a_pins->misoPin);
-  GPIO_resetBits(a_pins->mosiPort, a_pins->mosiPin);
-  GPIO_setBits(a_pins->csPort, a_pins->csPin);
-  GPIO_resetBits(a_pins->sckPort, a_pins->sckPin);
 
   EXTI_initParamsInit(&aci_rdyn_exti);
   aci_rdyn_exti.line    = a_pins->rdynExti;

@@ -59,10 +59,12 @@ and the received ACI event is placed in the tail of the event queue.
 #define UNUSED		    255
 
 /** Data type for ACI commands and events */
+#pragma pack(push,1)
 typedef struct {
   uint8_t status_byte;
   uint8_t buffer[HAL_ACI_MAX_LENGTH+1];
 } _aci_packed_ hal_aci_data_t;
+#pragma pack(pop)
 
 ACI_ASSERT_SIZE(hal_aci_data_t, HAL_ACI_MAX_LENGTH + 2);
 

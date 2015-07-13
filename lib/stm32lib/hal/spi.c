@@ -16,8 +16,9 @@ void HAL_SPI_initParamsInit(HAL_SPI_InitParams *initParams) {
 
 void HAL_SPI_init(HAL_SPI_InitParams *initParams) {
   uint16_t tmp;
+  SPI_Instance instance = initParams->instance;
 
-  assert_param(IS_SPI_INSTANCE(initParams->instance));
+  assert_param(IS_SPI_INSTANCE(instance));
   assert_param(IS_SPI_DIRECTION(initParams->direction));
   assert_param(IS_SPI_MODE(initParams->mode));
   assert_param(IS_SPI_FIRST_BIT(initParams->firstBit));
@@ -27,13 +28,13 @@ void HAL_SPI_init(HAL_SPI_InitParams *initParams) {
   assert_param(IS_SPI_NSS(initParams->nss));
   assert_param(IS_SPI_BAUD_RATE_PRESCALER(initParams->baudRatePrescaler));
 
-  if (initParams->instance == SPI1) {
+  if (instance == SPI1) {
     RCC_peripheralClockEnable(RCC_Peripheral_SPI1);
-  } else if (initParams->instance == SPI2) {
+  } else if (instance == SPI2) {
     RCC_peripheralClockEnable(RCC_Peripheral_SPI2);
   }
 #ifdef SPI3
-  else if (initParams->instance == SPI3) {
+  else if (instance == SPI3) {
     RCC_peripheralClockEnable(RCC_Peripheral_SPI3);
   }
 #endif
@@ -42,7 +43,7 @@ void HAL_SPI_init(HAL_SPI_InitParams *initParams) {
   }
 
   // CR1
-  tmp = initParams->instance->CR1;
+  tmp = instance->CR1;
 
   tmp &= ~SPI_Direction_mask;
   tmp |= initParams->direction;
@@ -65,10 +66,10 @@ void HAL_SPI_init(HAL_SPI_InitParams *initParams) {
   tmp &= ~SPI_CPHA_mask;
   tmp |= initParams->cpha;
 
-  initParams->instance->CR1 = tmp;
+  instance->CR1 = tmp;
 
   // CR2
-  tmp = initParams->instance->CR2;
+  tmp = instance->CR2;
 
 #ifdef STM32F0XX
   tmp &= ~SPI_DataSize_mask;
@@ -87,7 +88,7 @@ void HAL_SPI_init(HAL_SPI_InitParams *initParams) {
 #  error "No valid chip defined"
 #endif
 
-  initParams->instance->CR2 = tmp;
+  instance->CR2 = tmp;
 }
 
 void SPI_enable(SPI_Instance instance) {

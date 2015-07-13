@@ -32,98 +32,118 @@ void RCC_peripheralClock(RCC_Peripheral set, FunctionalState state) {
   assert_param(IS_RCC_PERIPHERAL(set));
   assert_param(IS_FUNCTIONAL_STATE(state));
 
-#ifdef STM32F0XX
-  if (set & RCC_Peripheral_AFIO)   {}
-  if (set & RCC_Peripheral_SYSCFG)   {
-    apb2enr |= RCC_APB2ENR_SYSCFGCOMPEN;
-  }
-  if (set & RCC_Peripheral_GPIOA)  {
-    ahbenr |= RCC_AHBENR_GPIOAEN;
-  }
-  if (set & RCC_Peripheral_GPIOB)  {
-    ahbenr |= RCC_AHBENR_GPIOBEN;
-  }
-  if (set & RCC_Peripheral_GPIOC)  {
-    ahbenr |= RCC_AHBENR_GPIOCEN;
-  }
-  if (set & RCC_Peripheral_GPIOD)  {
-    ahbenr |= RCC_AHBENR_GPIODEN;
-  }
-  if (set & RCC_Peripheral_GPIOE)  {
-    ahbenr |= RCC_AHBENR_GPIOEEN;
-  }
-  if (set & RCC_Peripheral_GPIOF)  {
-    ahbenr |= RCC_AHBENR_GPIOFEN;
-  }
-  if (set & RCC_Peripheral_DAC) {
-    apb1enr |= RCC_APB1ENR_DACEN;
-  }
-  if (set & RCC_Peripheral_USART1) {
-    apb2enr |= RCC_APB2ENR_USART1EN;
-  }
-  if (set & RCC_Peripheral_USART2) {
-    apb1enr |= RCC_APB1ENR_USART2EN;
-  }
-  if (set & RCC_Peripheral_SPI1)   {
-    apb2enr |= RCC_APB2ENR_SPI1EN;
-  }
-  if (set & RCC_Peripheral_SPI2)   {
-    apb1enr |= RCC_APB1ENR_SPI2EN;
-  }
-#ifdef RCC_APB1ENR_SPI3EN
-  if (set & RCC_Peripheral_SPI3)   {
-    apb1enr |= RCC_APB1ENR_SPI3EN;
-  }
-#endif
-#elif defined(STM32F10X)
-  if (set & RCC_Peripheral_ADC1)   {
-    apb2enr |= RCC_APB2ENR_ADC1EN;
-  }
   if (set & RCC_Peripheral_AFIO)   {
+#ifdef RCC_APB2ENR_AFIOEN
     apb2enr |= RCC_APB2ENR_AFIOEN;
+#endif
   }
+  
   if (set & RCC_Peripheral_SYSCFG)   {
-  }
-  if (set & RCC_Peripheral_GPIOA)  {
-    apb2enr |= RCC_APB2ENR_IOPAEN;
-  }
-  if (set & RCC_Peripheral_GPIOB)  {
-    apb2enr |= RCC_APB2ENR_IOPBEN;
-  }
-  if (set & RCC_Peripheral_GPIOC)  {
-    apb2enr |= RCC_APB2ENR_IOPCEN;
-  }
-  if (set & RCC_Peripheral_GPIOD)  {
-    apb2enr |= RCC_APB2ENR_IOPDEN;
-  }
-  if (set & RCC_Peripheral_GPIOE)  {
-    apb2enr |= RCC_APB2ENR_IOPEEN;
-  }
-  if (set & RCC_Peripheral_GPIOF)  {
-    assert_param(0);
-  }
-  if (set & RCC_Peripheral_DAC) {
-#ifdef RCC_APB1ENR_DACEN
-    apb1enr |= RCC_APB1ENR_DACEN;
+#ifdef RCC_APB2ENR_SYSCFGCOMPEN
+    apb2enr |= RCC_APB2ENR_SYSCFGCOMPEN;
 #else
     assert_param(0);
 #endif
   }
+  
+  if (set & RCC_Peripheral_GPIOA)  {
+#ifdef RCC_AHBENR_GPIOAEN
+    ahbenr |= RCC_AHBENR_GPIOAEN;
+#elif defined(RCC_APB2ENR_IOPAEN)
+    apb2enr |= RCC_APB2ENR_IOPAEN;
+#else
+    assert_param(0);
+#endif
+  }
+  
+  if (set & RCC_Peripheral_GPIOB)  {
+#ifdef RCC_AHBENR_GPIOBEN
+    ahbenr |= RCC_AHBENR_GPIOBEN;
+#elif defined(RCC_APB2ENR_IOPBEN)
+    apb2enr |= RCC_APB2ENR_IOPBEN;
+#else
+    assert_param(0);
+#endif
+  }
+  
+  if (set & RCC_Peripheral_GPIOC)  {
+#ifdef RCC_AHBENR_GPIOCEN
+    ahbenr |= RCC_AHBENR_GPIOCEN;
+#elif defined(RCC_APB2ENR_IOPCEN)
+    apb2enr |= RCC_APB2ENR_IOPCEN;
+#else
+    assert_param(0);
+#endif
+  }
+  
+  if (set & RCC_Peripheral_GPIOD)  {
+#ifdef RCC_AHBENR_GPIODEN
+    ahbenr |= RCC_AHBENR_GPIODEN;
+#elif defined(RCC_APB2ENR_IOPDEN)
+    apb2enr |= RCC_APB2ENR_IOPDEN;
+#else
+    assert_param(0);
+#endif
+  }
+  
+  if (set & RCC_Peripheral_GPIOE)  {
+#ifdef RCC_AHBENR_GPIOEEN
+    ahbenr |= RCC_AHBENR_GPIOEEN;
+#elif defined(RCC_APB2ENR_IOPEEN)
+    apb2enr |= RCC_APB2ENR_IOPEEN;
+#else
+    assert_param(0);
+#endif
+  }
+  
+  if (set & RCC_Peripheral_GPIOF)  {
+#ifdef RCC_AHBENR_GPIOFEN
+    ahbenr |= RCC_AHBENR_GPIOFEN;
+#else
+    assert_param(0);
+#endif
+  }
+
+  if (set & RCC_Peripheral_DAC) {
+    apb1enr |= RCC_APB1ENR_DACEN;
+  }
+  
   if (set & RCC_Peripheral_USART1) {
     apb2enr |= RCC_APB2ENR_USART1EN;
   }
+  
   if (set & RCC_Peripheral_USART2) {
     apb1enr |= RCC_APB1ENR_USART2EN;
   }
+  
   if (set & RCC_Peripheral_SPI1)   {
     apb2enr |= RCC_APB2ENR_SPI1EN;
   }
+  
   if (set & RCC_Peripheral_SPI2)   {
     apb1enr |= RCC_APB1ENR_SPI2EN;
   }
+  
+#ifdef SPI3
+  if (set & RCC_Peripheral_SPI3)   {
+#ifdef RCC_APB1ENR_SPI3EN
+    apb1enr |= RCC_APB1ENR_SPI3EN;
 #else
-#  error "No valid chip defined"
+    assert_param(0);
 #endif
+  }
+#endif
+
+  if (set & RCC_Peripheral_ADC1)   {
+#ifdef RCC_APB2ENR_ADC1EN
+    apb2enr |= RCC_APB2ENR_ADC1EN;
+#else
+    assert_param(0);
+#endif
+  }
+    
+  if (set & RCC_Peripheral_SYSCFG)   {
+  }
 
   if (state != DISABLE) {
     RCC->AHBENR |= ahbenr;
@@ -339,8 +359,8 @@ void RCC_getClocks(RCC_Clocks *clocks) {
       /* PREDIV1 selected as PLL clock entry */
 
       /* Get PREDIV1 clock source and division factor */
-      prediv1source = RCC->CFGR2 & CFGR2_PREDIV1SRC;
-      prediv1factor = (RCC->CFGR2 & CFGR2_PREDIV1) + 1;
+      prediv1source = RCC->CFGR2 & RCC_CFGR2_PREDIV1SRC;
+      prediv1factor = (RCC->CFGR2 & RCC_CFGR2_PREDIV1) + 1;
 
       if (prediv1source == 0) {
         /* HSE oscillator clock selected as PREDIV1 clock entry */
@@ -349,8 +369,8 @@ void RCC_getClocks(RCC_Clocks *clocks) {
         /* PLL2 clock selected as PREDIV1 clock entry */
 
         /* Get PREDIV2 division factor and PLL2 multiplication factor */
-        prediv2factor = ((RCC->CFGR2 & CFGR2_PREDIV2) >> 4) + 1;
-        pll2mull = ((RCC->CFGR2 & CFGR2_PLL2MUL) >> 8) + 2;
+        prediv2factor = ((RCC->CFGR2 & RCC_CFGR2_PREDIV2) >> 4) + 1;
+        pll2mull = ((RCC->CFGR2 & RCC_CFGR2_PLL2MUL) >> 8) + 2;
         clocks->SYSCLK_Frequency = (((HSE_VALUE / prediv2factor) * pll2mull) / prediv1factor) * pllmull;
       }
     }

@@ -23,6 +23,16 @@ void SPI_init(SPI_InitParams *initParams) {
   if(initParams->csPort != NULL && initParams->csPin != -1) {
     RCC_peripheralClockEnableForPort(initParams->csPort);
   }
+  if(initParams->halSpiInitParams.instance == SPI1) {
+    RCC_peripheralClockEnable(RCC_Peripheral_SPI1);
+  } else if(initParams->halSpiInitParams.instance == SPI2) {
+    RCC_peripheralClockEnable(RCC_Peripheral_SPI2);
+  } 
+#ifdef SPI3
+  else if(initParams->halSpiInitParams.instance == SPI3) {
+    RCC_peripheralClockEnable(RCC_Peripheral_SPI3);
+  }
+#endif
 
   // GPIO AFIO
   if (initParams->halSpiInitParams.instance == SPI1

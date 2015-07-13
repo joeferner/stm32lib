@@ -69,15 +69,7 @@
  * versions of the gcc (C) compiler it only works right with g++ (C++) compiler
  * versions that are version 4 or newer.
  */
-#ifdef __GNUC__
-#  if __GNUC__ >= 4
-#    define _aci_packed_ __attribute__((__packed__))
-#  else
-#    error "older g++ versions don't handle packed attribute in typedefs"
-#  endif
-#else
-#  define _aci_packed_
-#endif
+#define _aci_packed_
 
 /*
  * Define a macro that compares the size of the first parameter to the integer
@@ -154,17 +146,20 @@
  * @enum aci_pipe_store_t
  * @brief Storage type identifiers: local and remote
  */
+#pragma pack(push,1)
 typedef enum
 {
   ACI_STORE_INVALID = 0x0,
   ACI_STORE_LOCAL= 0x01,
   ACI_STORE_REMOTE= 0x02
 } _aci_packed_ aci_pipe_store_t;
+#pragma pack(pop)
 
 /**
  * @enum aci_pipe_type_t
  * @brief Pipe types
  */
+#pragma pack(push,1)
 typedef enum
 {
   ACI_TX_BROADCAST = 0x0001,
@@ -179,6 +174,7 @@ typedef enum
   ACI_RX_SIGN      = 0x0200,
   ACI_RX_ACK_AUTO  = 0x0400
 } _aci_packed_ aci_pipe_type_t;
+#pragma pack(pop)
 
 ACI_ASSERT_SIZE(aci_pipe_type_t, 2);
 
@@ -186,6 +182,7 @@ ACI_ASSERT_SIZE(aci_pipe_type_t, 2);
  * @enum aci_bd_addr_type_t
  * @brief Bluetooth Address types
  */
+#pragma pack(push,1)
 typedef enum
 {
   ACI_BD_ADDR_TYPE_INVALID  = 0x00,
@@ -194,11 +191,13 @@ typedef enum
   ACI_BD_ADDR_TYPE_RANDOM_PRIVATE_RESOLVABLE  = 0x03,
   ACI_BD_ADDR_TYPE_RANDOM_PRIVATE_UNRESOLVABLE  = 0x04
 } _aci_packed_ aci_bd_addr_type_t;
+#pragma pack(pop)
 
 /**
  * @enum aci_device_output_power_t
  * @brief Radio output power levels
  */
+#pragma pack(push,1)
 typedef enum
 {
   ACI_DEVICE_OUTPUT_POWER_MINUS_18DBM = 0x00, /**< Output power set to -18dBm */
@@ -206,11 +205,13 @@ typedef enum
   ACI_DEVICE_OUTPUT_POWER_MINUS_6DBM  = 0x02, /**< Output power set to -6dBm  */
   ACI_DEVICE_OUTPUT_POWER_0DBM  = 0x03  /**< Output power set to 0dBm   - DEFAULT*/
 } _aci_packed_ aci_device_output_power_t;
+#pragma pack(pop)
 
 /**
  * @enum aci_device_operation_mode_t
  * @brief Device operation modes
  */
+#pragma pack(push,1)
 typedef enum
 {
   ACI_DEVICE_INVALID   =0x00,
@@ -219,21 +220,25 @@ typedef enum
   ACI_DEVICE_STANDBY   =0x03,
   ACI_DEVICE_SLEEP     =0x04
 } _aci_packed_ aci_device_operation_mode_t;
+#pragma pack(pop)
 
 /**
  * @enum aci_disconnect_reason_t
  * @brief Reason enumeration for ACI_CMD_DISCONNECT
  */
+#pragma pack(push,1)
 typedef enum
 {
   ACI_REASON_TERMINATE      =0x01, /**< Use this to disconnect (does a terminate request), you need to wait for the "disconnected" event */
   ACI_REASON_BAD_TIMING     =0x02 /*<Use this to disconnect and inform the peer, that the timing on the link is not acceptable for the device, you need to wait for the "disconnected" event */
 } _aci_packed_ aci_disconnect_reason_t;
+#pragma pack(pop)
 
 /**
  * @enum aci_test_mode_change_t
  * @brief Device test mode control
  */
+#pragma pack(push,1)
 typedef enum
 {
   ACI_TEST_MODE_DTM_UART    = 0x01,
@@ -241,6 +246,7 @@ typedef enum
   ACI_TEST_MODE_EXIT        = 0xFF
 
 } _aci_packed_ aci_test_mode_change_t;
+#pragma pack(pop)
 
 ACI_ASSERT_SIZE(aci_test_mode_change_t, 1);
 
@@ -248,11 +254,13 @@ ACI_ASSERT_SIZE(aci_test_mode_change_t, 1);
  * @enum aci_permissions_t
  * @brief Data store permissions
  */
+#pragma pack(push,1)
 typedef enum
 {
   ACI_PERMISSIONS_NONE               =0x00,
   ACI_PERMISSIONS_LINK_AUTHENTICATED =0x01
 } _aci_packed_ aci_permissions_t;
+#pragma pack(pop)
 
 /**
  * @def ACI_VS_UUID_128_MAX_COUNT
@@ -265,6 +273,7 @@ typedef enum
  * @struct aci_ll_conn_params_t
  * @brief Link Layer Connection Parameters
  */
+#pragma pack(push,1)
 typedef struct
 {
   uint16_t min_conn_interval;   /**< Minimum connection interval requested from peer */
@@ -282,6 +291,7 @@ typedef struct
     #define ACI_PPCP_TIMEOUT_MULT_MIN     0x000A
     #define ACI_PPCP_TIMEOUT_MULT_MAX     0x0C80
 } _aci_packed_ aci_ll_conn_params_t;
+#pragma pack(pop)
 
 /**
  * @def aci_gap_ppcp_t
@@ -342,11 +352,13 @@ typedef struct
  * @struct aci_tx_data_t
  * @brief Generic ACI transmit data structure
  */
+#pragma pack(push,1)
 typedef struct
 {
   uint8_t pipe_number;
   uint8_t aci_data[ACI_PIPE_TX_DATA_MAX_LEN];
 } _aci_packed_ aci_tx_data_t;
+#pragma pack(pop)
 
 ACI_ASSERT_SIZE(aci_tx_data_t, ACI_PIPE_TX_DATA_MAX_LEN + 1);
 
@@ -354,11 +366,13 @@ ACI_ASSERT_SIZE(aci_tx_data_t, ACI_PIPE_TX_DATA_MAX_LEN + 1);
  * @struct aci_rx_data_t
  * @brief Generic ACI receive data structure
  */
+#pragma pack(push,1)
 typedef struct
 {
   uint8_t pipe_number;
   uint8_t aci_data[ACI_PIPE_RX_DATA_MAX_LEN];
 } _aci_packed_ aci_rx_data_t;
+#pragma pack(pop)
 
 ACI_ASSERT_SIZE(aci_rx_data_t, ACI_PIPE_RX_DATA_MAX_LEN + 1);
 
@@ -366,16 +380,19 @@ ACI_ASSERT_SIZE(aci_rx_data_t, ACI_PIPE_RX_DATA_MAX_LEN + 1);
  * @enum aci_hw_error_t
  * @brief Hardware Error codes
  */
+#pragma pack(push,1)
 typedef enum
 {
   ACI_HW_ERROR_NONE     = 0x00,
   ACI_HW_ERROR_FATAL    = 0x01
 } _aci_packed_ aci_hw_error_t;
+#pragma pack(pop)
 
 /**
  * @enum aci_clock_accuracy_t
  * @brief Bluetooth Low Energy Clock Accuracy
  */
+#pragma pack(push,1)
 typedef enum
 {
   ACI_CLOCK_ACCURACY_500_PPM = 0x00,
@@ -387,21 +404,25 @@ typedef enum
   ACI_CLOCK_ACCURACY_30_PPM  = 0x06,
   ACI_CLOCK_ACCURACY_20_PPM  = 0x07
 } _aci_packed_ aci_clock_accuracy_t;
+#pragma pack(pop)
 
 /**
  * @enum aci_app_latency_mode_t
  * @brief Application latency modes
  */
+#pragma pack(push,1)
 typedef enum
 {
   ACI_APP_LATENCY_DISABLE = 0,
   ACI_APP_LATENCY_ENABLE = 1
 } _aci_packed_ aci_app_latency_mode_t;
+#pragma pack(pop)
 
 /**
  * @enum gatt_format_t
  * @brief GATT format definitions
  */
+#pragma pack(push,1)
 typedef enum
 {
   ACI_GATT_FORMAT_NONE        = 0x00, /**< No characteristic format available */
@@ -433,29 +454,35 @@ typedef enum
   ACI_GATT_FORMAT_UTF16S      = 0x1A,
   ACI_GATT_FORMAT_STRUCT      = 0x1B
 } _aci_packed_ aci_gatt_format_t;
+#pragma pack(pop)
 
 /**
  * @brief GATT Bluetooth namespace
  */
+#pragma pack(push,1)
 typedef enum
 {
   ACI_GATT_NAMESPACE_INVALID  = 0x00,
   ACI_GATT_NAMESPACE_BTSIG    = 0x01 /**< Bluetooth SIG */
 } _aci_packed_ aci_gatt_namespace_t;
+#pragma pack(pop)
 
 /**
  * @brief Security key types
  */
+#pragma pack(push,1)
 typedef enum
 {
   ACI_KEY_TYPE_INVALID  = 0x00,
   ACI_KEY_TYPE_PASSKEY  = 0x01
 } _aci_packed_ aci_key_type_t;
+#pragma pack(pop)
 
 /**
  * @enum aci_bond_status_code_t
  * @brief Bond status code
  */
+#pragma pack(push,1)
 typedef enum
 {
  /**
@@ -512,6 +539,7 @@ typedef enum
   ACI_BOND_STATUS_FAILED_INVALID_PARAMETERS          = 0x8A
 
 } _aci_packed_ aci_bond_status_code_t;
+#pragma pack(pop)
 
 ACI_ASSERT_SIZE(aci_bond_status_code_t, 1);
 
@@ -519,6 +547,7 @@ ACI_ASSERT_SIZE(aci_bond_status_code_t, 1);
  * @enum aci_bond_status_source_t
  * @brief Source of a bond status code
  */
+#pragma pack(push,1)
 typedef enum
 {
   ACI_BOND_STATUS_SOURCE_INVALID                  = 0x00,
@@ -526,11 +555,13 @@ typedef enum
   ACI_BOND_STATUS_SOURCE_REMOTE                   = 0x02
 
 } _aci_packed_ aci_bond_status_source_t;
+#pragma pack(pop)
 
 /**
  * @enum aci_status_code_t
  * @brief ACI status codes
  */
+#pragma pack(push,1)
 typedef enum
 {
  /**
@@ -659,6 +690,7 @@ typedef enum
   ACI_STATUS_RESERVED_END                                   = 0xFF
 
 } _aci_packed_ aci_status_code_t;
+#pragma pack(pop)
 
 ACI_ASSERT_SIZE(aci_status_code_t, 1);
 
