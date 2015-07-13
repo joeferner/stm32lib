@@ -22,6 +22,8 @@ RingBufferU8 _debug_inputRingBuffer;
 char _debug_inputBuffer[DEBUG_READ_INPUT_BUFFER_SIZE];
 #endif
 
+bool _debug_setupComplete = false;
+
 void debug_setup() {
   USART_InitParams usart;
 
@@ -50,7 +52,13 @@ void debug_setup() {
 
   USART_enable(DEBUG_USART);
 
+  _debug_setupComplete = true;
+  
   IWDG_RESET;
+}
+
+bool debug_isSetup() {
+  return _debug_setupComplete;
 }
 
 #ifdef DEBUG_NETWORK_ENABLE

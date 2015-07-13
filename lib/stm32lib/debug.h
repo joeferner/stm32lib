@@ -3,6 +3,7 @@
 #define _STM32LIB_DEBUG_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "platform_config.h"
 
 #if defined(DEBUG_NETWORK_IP) && defined(DEBUG_NETWORK_PORT)
@@ -10,6 +11,7 @@
 #endif
 
 void debug_setup();
+bool debug_isSetup();
 #ifdef DEBUG_NETWORK_ENABLE
 void debug_networkSetup();
 #endif

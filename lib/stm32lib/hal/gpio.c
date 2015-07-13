@@ -1,5 +1,6 @@
 
 #include "gpio.h"
+#include "../debug.h"
 
 uint32_t _GPIO_portToEXTIPortSource(GPIO_Port port);
 uint32_t _GPIO_pinToEXTIPinSource(GPIO_Pin pin);
@@ -20,6 +21,19 @@ void GPIO_init(GPIO_InitParams *initParams) {
   assert_param(IS_GPIO_SPEED(initParams->speed));
   assert_param(IS_GPIO_PULL_UP_DOWN(initParams->pullUpDown));
 
+  /*
+  if(debug_isSetup()) {
+    printf("GPIO_init 0x%p:%04X - mode: 0x%02X, outputType: 0x%02X, speed: 0x%02X, pullUpDown: 0x%02X\n",
+	  initParams->port,
+	  initParams->pin,
+	  initParams->mode,
+	  initParams->outputType,
+	  initParams->speed,
+	  initParams->pullUpDown
+    );
+  }
+  */
+  
   uint32_t pinPos = 0;
   uint32_t pos = 0;
 #ifdef STM32F0XX

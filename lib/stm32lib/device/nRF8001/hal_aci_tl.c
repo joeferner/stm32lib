@@ -402,8 +402,7 @@ void hal_aci_tl_init(aci_pins_t *a_pins, bool debug)
   sleep_ms(30); //Wait for the nRF8001 to get hold of its lines - the lines float for a few ms after the reset
 
   /* Attach the interrupt to the RDYN line as requested by the caller */
-  if (a_pins->interface_is_interrupt)
-  {
+  if (a_pins->interface_is_interrupt) {
     // We use the LOW level of the RDYN line as the atmega328 can wakeup from sleep only on LOW
     EXTI_enable(&aci_rdyn_exti);
   }
