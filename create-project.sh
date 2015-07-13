@@ -64,6 +64,11 @@ if [ ! -f run-gdb.sh ]; then
   cp ${PROJECT_TEMPLATE_DIR}/run-gdb.sh run-gdb.sh
 fi
 
+if [ ! -f run-tty.sh ]; then
+  echo "Creating run-tty.sh"
+  cp ${PROJECT_TEMPLATE_DIR}/run-tty.sh run-tty.sh
+fi
+
 if [ ! -f run-st-util-server.sh ]; then
   echo "Creating run-st-util-server.sh"
   cp ${PROJECT_TEMPLATE_DIR}/run-st-util-server.sh run-st-util-server.sh
