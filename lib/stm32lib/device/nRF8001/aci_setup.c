@@ -21,7 +21,7 @@
 
 #include "lib_aci.h"
 #include "aci_setup.h"
-
+#include <stdio.h>
 
 // aci_struct that will contain 
 // total initial credits
@@ -52,16 +52,16 @@ static bool aci_setup_fill(aci_state_t *aci_stat, uint8_t *num_cmd_offset)
   while (*num_cmd_offset < aci_stat->aci_setup_info.num_setup_msgs)
   {
 	//Board dependent defines
-	#if defined (__AVR__)
-		//For Arduino copy the setup ACI message from Flash to RAM.
-		memcpy_P(&msg_to_send, &(aci_stat->aci_setup_info.setup_msgs[*num_cmd_offset]), 
-				  pgm_read_byte_near(&(aci_stat->aci_setup_info.setup_msgs[*num_cmd_offset].buffer[0]))+2); 
-	#elif defined(__PIC32MX__)
+	//#if defined (__AVR__)
+	//	//For Arduino copy the setup ACI message from Flash to RAM.
+	//	memcpy_P(&msg_to_send, &(aci_stat->aci_setup_info.setup_msgs[*num_cmd_offset]), 
+	//			  pgm_read_byte_near(&(aci_stat->aci_setup_info.setup_msgs[*num_cmd_offset].buffer[0]))+2); 
+	//#elif defined(__PIC32MX__)
 		//In ChipKit we store the setup messages in RAM
 		//Add 2 bytes to the length byte for status byte, length for the total number of bytes
 		memcpy(&msg_to_send, &(aci_stat->aci_setup_info.setup_msgs[*num_cmd_offset]), 
 				  (aci_stat->aci_setup_info.setup_msgs[*num_cmd_offset].buffer[0]+2)); 
-	#endif
+	//#endif
 
     //Put the Setup ACI message in the command queue
     if (!hal_aci_tl_send(&msg_to_send))
@@ -85,6 +85,8 @@ uint8_t do_aci_setup(aci_state_t *aci_stat)
   uint32_t i                   = 0x0000;
   aci_evt_t * aci_evt          = NULL;
   aci_status_code_t cmd_status = ACI_STATUS_ERROR_CRC_MISMATCH;
+  
+  printf("do_aci_setup\n");
   
   /*
   We are using the same buffer since we are copying the contents of the buffer 
