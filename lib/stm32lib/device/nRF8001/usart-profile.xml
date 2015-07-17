@@ -238,7 +238,7 @@
         <MinimumConnectionInterval>10</MinimumConnectionInterval>
         <MaximumConnectionInterval>18</MaximumConnectionInterval>
         <SlaveLatency>0</SlaveLatency>
-        <TimeoutMultipler>10</TimeoutMultipler>
+        <TimeoutMultipler>100</TimeoutMultipler>
         <AddServiceUpdateCharacteristic>true</AddServiceUpdateCharacteristic>
         <AddServiceUpdateCharacteristicPipe>true</AddServiceUpdateCharacteristicPipe>
         <TimingChangeDelay>5</TimingChangeDelay>
