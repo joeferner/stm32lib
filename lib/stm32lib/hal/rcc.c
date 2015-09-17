@@ -105,7 +105,11 @@ void RCC_peripheralClock(RCC_Peripheral set, FunctionalState state) {
   }
 
   if (set & RCC_Peripheral_DAC) {
+#ifdef RCC_APB1ENR_DACEN
     apb1enr |= RCC_APB1ENR_DACEN;
+#else
+    assert_param(0);
+#endif
   }
   
   if (set & RCC_Peripheral_USART1) {
